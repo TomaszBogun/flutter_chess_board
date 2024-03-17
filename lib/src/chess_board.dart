@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:chess/chess.dart' hide State;
@@ -18,6 +17,8 @@ class ChessBoard extends StatefulWidget {
   /// A boolean which checks if the user should be allowed to make moves
   final bool enableUserMoves;
 
+  final bool showBoardNumberAndLetters;
+
   /// The color type of the board
   final BoardColor boardColor;
 
@@ -25,16 +26,20 @@ class ChessBoard extends StatefulWidget {
 
   final VoidCallback? onMove;
 
+  final VoidCallback? beforeMove;
+
   final List<BoardArrow> arrows;
 
   const ChessBoard({
     Key? key,
     required this.controller,
     this.size,
+    this.showBoardNumberAndLetters = false,
     this.enableUserMoves = true,
     this.boardColor = BoardColor.brown,
     this.boardOrientation = PlayerColor.white,
     this.onMove,
+    this.beforeMove,
     this.arrows = const [],
   }) : super(key: key);
 
@@ -48,15 +53,128 @@ class _ChessBoardState extends State<ChessBoard> {
     return ValueListenableBuilder<Chess>(
       valueListenable: widget.controller,
       builder: (context, game, _) {
+        double buffer = 2;
+        double sizeToTextRatio = 0.25;
+        
+        Move lastMove = widget.controller.game.getHistory()
+        
         return SizedBox(
           width: widget.size,
           height: widget.size,
           child: Stack(
             children: [
+              // actual board images
               AspectRatio(
                 child: _getBoardImage(widget.boardColor),
                 aspectRatio: 1.0,
               ),
+              
+              if(true) Container(
+                  width: widget.size!,
+                  height: widget.size!,
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: buffer,
+                        bottom: buffer,
+                        child: ,
+                      ),
+                    ],
+                  )
+              )
+              
+              // showing board number and letters widget
+              if (widget.showBoardNumberAndLetters) Container(
+                width: widget.size!,
+                height: widget.size!,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: buffer,
+                      bottom: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.white ? "a" : "h", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      left: (1 * (widget.size!/8)) + buffer,
+                      bottom: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.white ? "b" : "g", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      left: (2 * (widget.size!/8)) + buffer,
+                      bottom: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.white ? "c" : "f", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      left: (3 * (widget.size!/8)) + buffer,
+                      bottom: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.white ? "d" : "e", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      left: (4 * (widget.size!/8)) + buffer,
+                      bottom: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.white ? "e" : "d", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      left: (5 * (widget.size!/8)) + buffer,
+                      bottom: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.white ? "f" : "c", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      left: (6 * (widget.size!/8)) + buffer,
+                      bottom: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.white ? "g" : "b", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      left: (7 * (widget.size!/8)) + buffer,
+                      bottom: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.white ? "h" : "a", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    ///################
+                    Positioned(
+                      right: buffer,
+                      top: buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.black ? "1" : "8", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      right: buffer,
+                      top: (1 * (widget.size!/8)) + buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.black ? "2" : "7", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      right: buffer,
+                      top: (2 * (widget.size!/8)) + buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.black ? "3" : "6", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      right: buffer,
+                      top: (3 * (widget.size!/8)) + buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.black ? "4" : "5", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      right: buffer,
+                      top: (4 * (widget.size!/8)) + buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.black ? "5" : "4", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      right: buffer,
+                      top: (5 * (widget.size!/8)) + buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.black ? "6" : "3", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      right: buffer,
+                      top: (6 * (widget.size!/8)) + buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.black ? "7" : "2", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                    Positioned(
+                      right: buffer,
+                      top: (7 * (widget.size!/8)) + buffer,
+                      child: Text(widget.boardOrientation == PlayerColor.black ? "8" : "1", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+                    ),
+                  ],
+                ),
+              ),
+
+              // drawing pieces
               AspectRatio(
                 aspectRatio: 1.0,
                 child: GridView.builder(
@@ -78,12 +196,18 @@ class _ChessBoardState extends State<ChessBoard> {
                     var piece = BoardPiece(
                       squareName: squareName,
                       game: game,
+                      size: widget.size!,
                     );
 
                     var draggable = game.get(squareName) != null
                         ? Draggable<PieceMoveData>(
                             child: piece,
-                            feedback: piece,
+                            feedback: SizedBox(
+                              width: widget.size! / 8,
+                              height: widget.size! / 8,
+                              child: piece,
+                            ),
+                            //feedbackOffset: Offset(widget.size! / 16, widget.size! / 16),
                             childWhenDragging: SizedBox(),
                             data: PieceMoveData(
                               squareName: squareName,
@@ -113,6 +237,7 @@ class _ChessBoardState extends State<ChessBoard> {
                         var val = await _promotionDialog(context);
 
                         if (val != null) {
+                          widget.beforeMove?.call();
                           widget.controller.makeMoveWithPromotion(
                             from: pieceMoveData.squareName,
                             to: squareName,
@@ -122,6 +247,7 @@ class _ChessBoardState extends State<ChessBoard> {
                           return;
                         }
                       } else {
+                        widget.beforeMove?.call();
                         widget.controller.makeMove(
                           from: pieceMoveData.squareName,
                           to: squareName,
@@ -139,17 +265,18 @@ class _ChessBoardState extends State<ChessBoard> {
                   physics: NeverScrollableScrollPhysics(),
                 ),
               ),
-              if (widget.arrows.isNotEmpty)
-                IgnorePointer(
-                  child: AspectRatio(
-                    aspectRatio: 1.0,
-                    child: CustomPaint(
-                      child: Container(),
-                      painter:
-                          _ArrowPainter(widget.arrows, widget.boardOrientation),
-                    ),
+
+              // drawing arrows
+              if (widget.arrows.isNotEmpty)IgnorePointer(
+                child: AspectRatio(
+                  aspectRatio: 1.0,
+                  child: CustomPaint(
+                    child: Container(),
+                    painter:
+                        _ArrowPainter(widget.arrows, widget.boardOrientation),
                   ),
                 ),
+              ),
             ],
           ),
         );
@@ -186,60 +313,41 @@ class _ChessBoardState extends State<ChessBoard> {
         );
     }
   }
+}
 
-  /// Show dialog when pawn reaches last square
-  Future<String?> _promotionDialog(BuildContext context) async {
-    return showDialog<String>(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return new AlertDialog(
-          title: new Text('Choose promotion'),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              InkWell(
-                child: WhiteQueen(),
-                onTap: () {
-                  Navigator.of(context).pop("q");
-                },
-              ),
-              InkWell(
-                child: WhiteRook(),
-                onTap: () {
-                  Navigator.of(context).pop("r");
-                },
-              ),
-              InkWell(
-                child: WhiteBishop(),
-                onTap: () {
-                  Navigator.of(context).pop("b");
-                },
-              ),
-              InkWell(
-                child: WhiteKnight(),
-                onTap: () {
-                  Navigator.of(context).pop("n");
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    ).then((value) {
-      return value;
-    });
+int getImageSize(double? size){
+  if(size == null){
+    return 8;
   }
+  if (size >= 128) {
+    return 256;
+  }
+  if (size >= 64) {
+    return 128;
+  }
+  if (size >= 32) {
+    return 64;
+  }
+  if (size >= 16) {
+    return 32;
+  }
+  if (size >= 8) {
+    return 16;
+  }
+  return 8;
 }
 
 class BoardPiece extends StatelessWidget {
   final String squareName;
   final Chess game;
+  final double? size;
 
   const BoardPiece({
     Key? key,
     required this.squareName,
     required this.game,
+    this.size,
+
   }) : super(key: key);
 
   @override
@@ -251,48 +359,52 @@ class BoardPiece extends StatelessWidget {
       return Container();
     }
 
+
+    int imageSize = getImageSize(size);
+    String sizeString = imageSize.toString();
+
     String piece = (square?.color == Color.WHITE ? 'W' : 'B') +
         (square?.type.toUpperCase() ?? 'P');
 
     switch (piece) {
       case "WP":
-        imageToDisplay = WhitePawn();
+        imageToDisplay = Image.asset("images/white-pawn-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "WR":
-        imageToDisplay = WhiteRook();
+        imageToDisplay = Image.asset("images/white-rook-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "WN":
-        imageToDisplay = WhiteKnight();
+        imageToDisplay = Image.asset("images/white-knight-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "WB":
-        imageToDisplay = WhiteBishop();
+        imageToDisplay = Image.asset("images/white-bishop-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "WQ":
-        imageToDisplay = WhiteQueen();
+        imageToDisplay = Image.asset("images/white-queen-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "WK":
-        imageToDisplay = WhiteKing();
+        imageToDisplay = Image.asset("images/white-king-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "BP":
-        imageToDisplay = BlackPawn();
+        imageToDisplay = Image.asset("images/black-pawn-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "BR":
-        imageToDisplay = BlackRook();
+        imageToDisplay = Image.asset("images/black-rook-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "BN":
-        imageToDisplay = BlackKnight();
+        imageToDisplay = Image.asset("images/black-knight-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "BB":
-        imageToDisplay = BlackBishop();
+        imageToDisplay = Image.asset("images/black-bishop-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "BQ":
-        imageToDisplay = BlackQueen();
+        imageToDisplay = Image.asset("images/black-queen-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       case "BK":
-        imageToDisplay = BlackKing();
+        imageToDisplay = Image.asset("images/black-king-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
         break;
       default:
-        imageToDisplay = WhitePawn();
+        imageToDisplay = Container();
     }
 
     return imageToDisplay;
@@ -405,4 +517,52 @@ class _ArrowPainter extends CustomPainter {
   bool shouldRepaint(_ArrowPainter oldDelegate) {
     return arrows != oldDelegate.arrows;
   }
+}
+
+
+Future<String?> showPromotionDialog(BuildContext context) async{
+  return await _promotionDialog(context);
+}
+
+Future<String?> _promotionDialog(BuildContext context) async {
+  return showDialog<String>(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return new AlertDialog(
+        title: new Text('Choose promotion'),
+        content: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: <Widget>[
+            InkWell(
+              child: WhiteQueen(),
+              onTap: () {
+                Navigator.of(context).pop("q");
+              },
+            ),
+            InkWell(
+              child: WhiteRook(),
+              onTap: () {
+                Navigator.of(context).pop("r");
+              },
+            ),
+            InkWell(
+              child: WhiteBishop(),
+              onTap: () {
+                Navigator.of(context).pop("b");
+              },
+            ),
+            InkWell(
+              child: WhiteKnight(),
+              onTap: () {
+                Navigator.of(context).pop("n");
+              },
+            ),
+          ],
+        ),
+      );
+    },
+  ).then((value) {
+    return value;
+  });
 }
