@@ -67,20 +67,6 @@ class _ChessBoardState extends State<ChessBoard> {
                 aspectRatio: 1.0,
               ),
               
-              if(true) Container(
-                  width: widget.size!,
-                  height: widget.size!,
-                  child: Stack(
-                    children: [
-                      Positioned(
-                        left: buffer,
-                        bottom: buffer,
-                        child: ,
-                      ),
-                    ],
-                  )
-              )
-              
               // showing board number and letters widget
               if (widget.showBoardNumberAndLetters) Container(
                 width: widget.size!,
