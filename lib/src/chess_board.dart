@@ -56,8 +56,6 @@ class _ChessBoardState extends State<ChessBoard> {
         double buffer = 2;
         double sizeToTextRatio = 0.25;
         
-        Move lastMove = widget.controller.game.getHistory()
-        
         return SizedBox(
           width: widget.size,
           height: widget.size,
