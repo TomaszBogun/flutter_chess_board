@@ -42,7 +42,7 @@ class ChessBoard extends StatefulWidget {
     this.boardOrientation = PlayerColor.white,
     this.onMove,
     this.beforeMove,
-    this.highlightLastMoveSquares,
+    this.highlightLastMoveSquares = true,
     this.arrows = const [],
   }) : super(key: key);
 
