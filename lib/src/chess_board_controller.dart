@@ -150,5 +150,7 @@ class ChessBoardController extends ValueNotifier<Chess> {
       case BoardPieceType.Rook:
         return Piece(PieceType.ROOK, convertedColor);
     }
+    
   }
+  
 }

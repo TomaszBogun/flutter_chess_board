@@ -30,6 +30,8 @@ class ChessBoard extends StatefulWidget {
 
   final List<BoardArrow> arrows;
 
+  final bool highlightLastMoveSquares;
+
   const ChessBoard({
     Key? key,
     required this.controller,
@@ -40,6 +42,7 @@ class ChessBoard extends StatefulWidget {
     this.boardOrientation = PlayerColor.white,
     this.onMove,
     this.beforeMove,
+    this.highlightLastMoveSquares,
     this.arrows = const [],
   }) : super(key: key);
 
@@ -55,7 +58,13 @@ class _ChessBoardState extends State<ChessBoard> {
       builder: (context, game, _) {
         double buffer = 2;
         double sizeToTextRatio = 0.25;
-        
+
+        FromToMove? squaresToHighlight = null;
+        if(widget.highlightLastMoveSquares){
+          squaresToHighlight = getSquaresToHighlight();
+        }
+
+
         return SizedBox(
           width: widget.size,
           height: widget.size,
@@ -66,7 +75,36 @@ class _ChessBoardState extends State<ChessBoard> {
                 child: _getBoardImage(widget.boardColor),
                 aspectRatio: 1.0,
               ),
-              
+
+              // highlights from and to squares
+              if(squaresToHighlight != null && widget.highlightLastMoveSquares) Container(
+                width: widget.size!,
+                height: widget.size,
+                child: Stack(
+                  children: [
+                    Positioned(
+                      left: squaresToHighlight.fromX * (widget.size!/8),
+                      bottom: squaresToHighlight.fromY * (widget.size!/8),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.25),
+                        width: widget.size!/8,
+                        height: widget.size!/8,
+                      ),
+                    ),
+                    Positioned(
+                      left: squaresToHighlight.toX * (widget.size!/8),
+                      bottom: squaresToHighlight.toY * (widget.size!/8),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.25),
+                        width: widget.size!/8,
+                        height: widget.size!/8,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+
               // showing board number and letters widget
               if (widget.showBoardNumberAndLetters) Container(
                 width: widget.size!,
@@ -266,6 +304,37 @@ class _ChessBoardState extends State<ChessBoard> {
         );
       },
     );
+  }
+
+  // gets from and to square of the last move
+  FromToMove? getSquaresToHighlight(){
+
+    var history = widget.controller.game.getHistory({"verbose": true});
+
+    if (history == null || history.isEmpty){
+      return null;
+    }
+
+    var lastMove = history.last;
+
+    String from = lastMove["from"].replaceAll("a","1").replaceAll("b","2").replaceAll("c","3").replaceAll("d","4").replaceAll("e","5").replaceAll("f","6").replaceAll("g","7").replaceAll("h","8");
+    String to = lastMove["to"].replaceAll("a","1").replaceAll("b","2").replaceAll("c","3").replaceAll("d","4").replaceAll("e","5").replaceAll("f","6").replaceAll("g","7").replaceAll("h","8");
+    int fromX = int.parse(from.substring(0, 1)) - 1;
+    int fromY = int.parse(from.substring(1, 2)) - 1;
+    int toX = int.parse(to.substring(0, 1)) - 1;
+    int toY = int.parse(to.substring(1, 2)) - 1;
+
+
+    if(widget.boardOrientation == PlayerColor.black){
+      fromX = 7-fromX;
+      fromY = 7-fromY;
+      toX = 7-toX;
+      toY = 7-toY;
+    }
+
+
+    return FromToMove(fromX, fromY, toX, toY);
+
   }
 
   /// Returns the board image
@@ -549,4 +618,13 @@ Future<String?> _promotionDialog(BuildContext context) async {
   ).then((value) {
     return value;
   });
+}
+
+// similar to move but we use this for hightlighting squares
+class FromToMove {
+  final int fromX;
+  final int fromY;
+  final int toX;
+  final int toY;
+  const FromToMove(this.fromX, this.fromY, this.toX, this.toY);
 }
