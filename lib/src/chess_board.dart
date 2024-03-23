@@ -5,6 +5,7 @@ import 'package:chess/chess.dart' hide State;
 import 'board_arrow.dart';
 import 'chess_board_controller.dart';
 import 'constants.dart';
+import "dart:ui" as ui;
 
 class ChessBoard extends StatefulWidget {
   /// An instance of [ChessBoardController] which holds the game and allows
@@ -32,6 +33,8 @@ class ChessBoard extends StatefulWidget {
 
   final bool highlightLastMoveSquares;
 
+  final ui.Color highlightLastmoveSquaresColor;
+
   const ChessBoard({
     Key? key,
     required this.controller,
@@ -43,6 +46,7 @@ class ChessBoard extends StatefulWidget {
     this.onMove,
     this.beforeMove,
     this.highlightLastMoveSquares = true,
+    required this.highlightLastmoveSquaresColor,
     this.arrows = const [],
   }) : super(key: key);
 
@@ -86,7 +90,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       left: squaresToHighlight.fromX * (widget.size!/8),
                       bottom: squaresToHighlight.fromY * (widget.size!/8),
                       child: Container(
-                        color: Colors.black.withOpacity(0.25),
+                        color: widget.highlightLastmoveSquaresColor.withOpacity(0.45),
                         width: widget.size!/8,
                         height: widget.size!/8,
                       ),
@@ -95,7 +99,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       left: squaresToHighlight.toX * (widget.size!/8),
                       bottom: squaresToHighlight.toY * (widget.size!/8),
                       child: Container(
-                        color: Colors.black.withOpacity(0.25),
+                        color: widget.highlightLastmoveSquaresColor.withOpacity(0.45),
                         width: widget.size!/8,
                         height: widget.size!/8,
                       ),
