@@ -4,6 +4,7 @@ import 'constants.dart';
 
 class ChessBoardController extends ValueNotifier<Chess> {
   late Chess game;
+  List<String> previousFENs = []; // only works if used makeMove, makeMoveWithPromotion to get to current position
 
   factory ChessBoardController() => ChessBoardController._(Chess());
 
@@ -19,6 +20,7 @@ class ChessBoardController extends ValueNotifier<Chess> {
 
   /// Makes move on the board
   void makeMove({required String from, required String to}) {
+    previousFENs.add(game.fen);
     game.move({"from": from, "to": to});
     notifyListeners();
   }
@@ -29,12 +31,14 @@ class ChessBoardController extends ValueNotifier<Chess> {
       {required String from,
       required String to,
       required String pieceToPromoteTo}) {
+    previousFENs.add(game.fen);
     game.move({"from": from, "to": to, "promotion": pieceToPromoteTo});
     notifyListeners();
   }
 
   /// Makes move on the board
   void makeMoveWithNormalNotation(String move) {
+    previousFENs.add(game.fen);
     game.move(move);
     notifyListeners();
   }
