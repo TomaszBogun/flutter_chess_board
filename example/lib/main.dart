@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_chess_board/chess/chess.dart' hide State;
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 
 void main() {
@@ -55,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                     color: Colors.red.withOpacity(0.7),
                   ),
                 ],
-                boardOrientation: PlayerColor.white,
+                boardOrientation: PlayerColor.white, highlightLastmoveSquaresColor: Colors.transparent,
               ),
             ),
           ),

@@ -1,5 +1,5 @@
-import 'package:chess/chess.dart';
 import 'package:flutter/material.dart';
+import '../chess/chess.dart';
 import 'constants.dart';
 
 class ChessBoardController extends ValueNotifier<Chess> {
