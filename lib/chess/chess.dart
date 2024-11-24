@@ -10,6 +10,7 @@ library chess;
  *  https://github.com/jhlywa/chess.js/blob/master/LICENSE
  */
 
+
 class Chess {
   // Constants/Class Variables
   static const Color BLACK = Color.BLACK;
@@ -497,12 +498,13 @@ class Chess {
     // Adjusted en passant logic: Only include the square if an opponent pawn can capture
     String epflags = '-';
     if (ep_square != EMPTY) {
-      final capturingOffsets = [15, 17]; // Offsets for potential pawn captures
-      final opponentColor = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+      final capturingPawns = [15, 17]; // Offsets for potential captures
+      final lastTurn = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+      final nextTurn = turn;
 
-      for (var offset in capturingOffsets) {
-        var potentialPawnSquare = ep_square! + (opponentColor == Color.WHITE ? -offset : offset);
-        if (board[potentialPawnSquare]?.type == PAWN && board[potentialPawnSquare]?.color == opponentColor) {
+      for (var offset in capturingPawns) {
+        final captureSquare = ep_square! + (lastTurn == Color.WHITE ? -offset : offset);
+        if (board[captureSquare]?.type == PAWN && board[captureSquare]?.color == nextTurn) {
           epflags = algebraic(ep_square!);
           break;
         }
@@ -568,12 +570,13 @@ class Chess {
     // Adjusted en passant logic: Only include the square if an opponent pawn can capture
     String epflags = '-';
     if (ep_square != EMPTY) {
-      final capturingOffsets = [15, 17]; // Offsets for potential pawn captures
-      final opponentColor = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+      final capturingPawns = [15, 17]; // Offsets for potential captures
+      final lastTurn = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+      final nextTurn = turn;
 
-      for (var offset in capturingOffsets) {
-        var potentialPawnSquare = ep_square! + (opponentColor == Color.WHITE ? -offset : offset);
-        if (board[potentialPawnSquare]?.type == PAWN && board[potentialPawnSquare]?.color == opponentColor) {
+      for (var offset in capturingPawns) {
+        final captureSquare = ep_square! + (lastTurn == Color.WHITE ? -offset : offset);
+        if (board[captureSquare]?.type == PAWN && board[captureSquare]?.color == nextTurn) {
           epflags = algebraic(ep_square!);
           break;
         }
