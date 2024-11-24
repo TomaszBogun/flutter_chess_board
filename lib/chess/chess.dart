@@ -564,7 +564,22 @@ class Chess {
     if (cflags == '') {
       cflags = '-';
     }
-    final epflags = (ep_square == EMPTY) ? '-' : algebraic(ep_square!);
+
+    // Adjusted en passant logic: Only include the square if an opponent pawn can capture
+    String epflags = '-';
+    if (ep_square != EMPTY) {
+      final capturingOffsets = [15, 17]; // Offsets for potential pawn captures
+      final opponentColor = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+
+      for (var offset in capturingOffsets) {
+        var potentialPawnSquare = ep_square! + (opponentColor == Color.WHITE ? -offset : offset);
+        if (board[potentialPawnSquare]?.type == PAWN && board[potentialPawnSquare]?.color == opponentColor) {
+          epflags = algebraic(ep_square!);
+          break;
+        }
+      }
+    }
+
     final turnStr = (turn == Color.WHITE) ? 'w' : 'b';
 
     return [fen, turnStr, cflags, epflags, half_moves, move_number].join(' ');
