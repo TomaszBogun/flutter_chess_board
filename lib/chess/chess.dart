@@ -516,78 +516,6 @@ class Chess {
     return [fen, turnStr, cflags, epflags, half_moves, move_number].join(' ');
   }
 
-  String generate_legacy_fen(){
-    var empty = 0;
-    var fen = '';
-
-    for (var i = SQUARES_A8; i <= SQUARES_H1; i++) {
-      if (board[i] == null) {
-        empty++;
-      } else {
-        if (empty > 0) {
-          fen += empty.toString();
-          empty = 0;
-        }
-        var color = board[i]!.color;
-        PieceType? type = board[i]!.type;
-
-        fen += (color == WHITE) ? type.toUpperCase() : type.toLowerCase();
-      }
-
-      if (((i + 1) & 0x88) != 0) {
-        if (empty > 0) {
-          fen += empty.toString();
-        }
-
-        if (i != SQUARES_H1) {
-          fen += '/';
-        }
-
-        empty = 0;
-        i += 8;
-      }
-    }
-
-    var cflags = '';
-    if ((castling[WHITE] & BITS_KSIDE_CASTLE) != 0) {
-      cflags += 'K';
-    }
-    if ((castling[WHITE] & BITS_QSIDE_CASTLE) != 0) {
-      cflags += 'Q';
-    }
-    if ((castling[BLACK] & BITS_KSIDE_CASTLE) != 0) {
-      cflags += 'k';
-    }
-    if ((castling[BLACK] & BITS_QSIDE_CASTLE) != 0) {
-      cflags += 'q';
-    }
-
-    /* do we have an empty castling flag? */
-    if (cflags == '') {
-      cflags = '-';
-    }
-
-    // Adjusted en passant logic: Only include the square if an opponent pawn can capture
-    String epflags = '-';
-    if (ep_square != EMPTY) {
-      final capturingPawns = [15, 17]; // Offsets for potential captures
-      final lastTurn = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
-      final nextTurn = turn;
-
-      for (var offset in capturingPawns) {
-        final captureSquare = ep_square! + (lastTurn == Color.WHITE ? -offset : offset);
-        if (board[captureSquare]?.type == PAWN && board[captureSquare]?.color == nextTurn) {
-          epflags = algebraic(ep_square!);
-          break;
-        }
-      }
-    }
-
-    final turnStr = (turn == Color.WHITE) ? 'w' : 'b';
-
-    return [fen, turnStr, cflags, epflags, half_moves, move_number].join(' ');
-  }
-
   /// Updates [header] with the List of args and returns it
   Map set_header(args) {
     for (var i = 0; i < args.length; i += 2) {
@@ -1381,10 +1309,6 @@ class Chess {
 
   String get fen {
     return generate_fen();
-  }
-
-  String get legacy_fen {
-    return generate_legacy_fen();
   }
 
   /// return the san string representation of each move in history. Each string corresponds to one move.
