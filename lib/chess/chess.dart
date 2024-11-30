@@ -225,6 +225,8 @@ class Chess {
 
     clear();
 
+
+    // 1: parse main fen
     for (var i = 0; i < position.length; i++) {
       final piece = position[i];
 
@@ -240,6 +242,7 @@ class Chess {
       }
     }
 
+    // 2: parse white / black
     if (tokens[1] == 'w') {
       turn = WHITE;
     } else {
@@ -247,6 +250,7 @@ class Chess {
       turn = BLACK;
     }
 
+    // 3: parse castling info
     if (tokens[2].indexOf('K') > -1) {
       castling[WHITE] |= BITS_KSIDE_CASTLE;
     }
@@ -260,9 +264,22 @@ class Chess {
       castling[BLACK] |= BITS_QSIDE_CASTLE;
     }
 
+    // 4: parse en passant square
     ep_square = (tokens[3] == '-') ? EMPTY : SQUARES[tokens[3]];
-    half_moves = int.parse(tokens[4]);
-    move_number = int.parse(tokens[5]);
+
+    // 5: parse half move number (if exists)
+    if(tokens.length>=5){
+      half_moves = int.parse(tokens[4]);
+    }else{
+      half_moves = 0;
+    }
+
+    // 6: parse full move number (if exists)
+    if(tokens.length>=6){
+      move_number = int.parse(tokens[5]);
+    }else{
+      move_number = 0;
+    }
 
     update_setup(generate_fen());
 
@@ -302,8 +319,6 @@ class Chess {
       if (temp <= 0) {
         return {'valid': false, 'error_number': 2, 'error': errors[2]};
       }
-    } else {
-      return {'valid': false, 'error_number': 2, 'error': errors[2]};
     }
 
     /* 3rd criterion: half move counter is an integer >= 0? */
@@ -312,8 +327,6 @@ class Chess {
       if (temp < 0) {
         return {'valid': false, 'error_number': 3, 'error': errors[3]};
       }
-    } else {
-      return {'valid': false, 'error_number': 3, 'error': errors[3]};
     }
 
     /* 4th criterion: 4th field is a valid e.p.-string? */
@@ -513,8 +526,81 @@ class Chess {
 
     final turnStr = (turn == Color.WHITE) ? 'w' : 'b';
 
+    return [fen, turnStr, cflags, epflags].join(' ');
+  }
+
+  String generate_legacy_fen() {
+    var empty = 0;
+    var fen = '';
+
+    for (var i = SQUARES_A8; i <= SQUARES_H1; i++) {
+      if (board[i] == null) {
+        empty++;
+      } else {
+        if (empty > 0) {
+          fen += empty.toString();
+          empty = 0;
+        }
+        var color = board[i]!.color;
+        PieceType? type = board[i]!.type;
+
+        fen += (color == WHITE) ? type.toUpperCase() : type.toLowerCase();
+      }
+
+      if (((i + 1) & 0x88) != 0) {
+        if (empty > 0) {
+          fen += empty.toString();
+        }
+
+        if (i != SQUARES_H1) {
+          fen += '/';
+        }
+
+        empty = 0;
+        i += 8;
+      }
+    }
+
+    var cflags = '';
+    if ((castling[WHITE] & BITS_KSIDE_CASTLE) != 0) {
+      cflags += 'K';
+    }
+    if ((castling[WHITE] & BITS_QSIDE_CASTLE) != 0) {
+      cflags += 'Q';
+    }
+    if ((castling[BLACK] & BITS_KSIDE_CASTLE) != 0) {
+      cflags += 'k';
+    }
+    if ((castling[BLACK] & BITS_QSIDE_CASTLE) != 0) {
+      cflags += 'q';
+    }
+
+    /* do we have an empty castling flag? */
+    if (cflags == '') {
+      cflags = '-';
+    }
+
+    // Adjusted en passant logic: Only include the square if an opponent pawn can capture
+    String epflags = '-';
+    if (ep_square != EMPTY) {
+      final capturingPawns = [15, 17]; // Offsets for potential captures
+      final lastTurn = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+      final nextTurn = turn;
+
+      for (var offset in capturingPawns) {
+        final captureSquare = ep_square! + (lastTurn == Color.WHITE ? -offset : offset);
+        if (board[captureSquare]?.type == PAWN && board[captureSquare]?.color == nextTurn) {
+          epflags = algebraic(ep_square!);
+          break;
+        }
+      }
+    }
+
+    final turnStr = (turn == Color.WHITE) ? 'w' : 'b';
+
     return [fen, turnStr, cflags, epflags, half_moves, move_number].join(' ');
   }
+
 
   /// Updates [header] with the List of args and returns it
   Map set_header(args) {
