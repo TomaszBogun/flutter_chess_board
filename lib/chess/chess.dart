@@ -278,7 +278,7 @@ class Chess {
     if(tokens.length>=6){
       move_number = int.parse(tokens[5]);
     }else{
-      move_number = 0;
+      move_number = 1;
     }
 
     update_setup(generate_fen());
@@ -1406,9 +1406,13 @@ class Chess {
     }
 
     var start_move_number = 1;
-    if (header['FEN'] != null) {
-      final move_number_string = header['FEN'].split(' ')[5];
-      start_move_number = int.parse(move_number_string);
+    if (header["FEN"] != null) {
+      try{
+        final move_number_string = header["FEN"].split(" ")[5];
+        start_move_number = int.parse(move_number_string);
+      }catch(e){
+        start_move_number = 0;
+      }
     }
 
     final moves = <String?>[];
