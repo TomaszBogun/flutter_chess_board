@@ -37,7 +37,7 @@ class Chess {
   static const String SYMBOLS = 'pnbrqkPNBRQK';
 
   static const String DEFAULT_POSITION =
-      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+      'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq -';
 
   static const List POSSIBLE_RESULTS = ['1-0', '0-1', '1/2-1/2', '*'];
 
@@ -291,7 +291,7 @@ class Chess {
   static Map validate_fen(String fen) {
     const errors = {
       0: 'No errors.',
-      1: 'FEN string must contain six space-delimited fields.',
+      1: 'FEN string must contain either 4 or 6 space-delimited fields.',
       2: '6th field (move number) must be a positive integer.',
       3: '5th field (half move counter) must be a non-negative integer.',
       4: '4th field (en-passant square) is invalid.',
@@ -307,25 +307,28 @@ class Chess {
       14: 'King of opponent player is in check.',
     };
 
-    /* 1st criterion: 6 space-seperated fields? */
+    /* 1st criterion: 4 or 6 space-seperated fields? - allows for either baase fen or full fen */
     List tokens = fen.split(RegExp(r'\s+'));
-    if (tokens.length != 6) {
+    if (tokens.length != 4 && tokens.length != 6) {
       return {'valid': false, 'error_number': 1, 'error': errors[1]};
     }
 
-    /* 2nd criterion: move number field is a integer value > 0? */
-    var temp = int.tryParse(tokens[5]);
-    if (temp != null) {
-      if (temp <= 0) {
-        return {'valid': false, 'error_number': 2, 'error': errors[2]};
+    // specific validation steps for loading in full fen
+    if(tokens.length == 6){
+      /* 2nd criterion: move number field is a integer value > 0? */
+      var temp = int.tryParse(tokens[5]);
+      if (temp != null) {
+        if (temp <= 0) {
+          return {'valid': false, 'error_number': 2, 'error': errors[2]};
+        }
       }
-    }
 
-    /* 3rd criterion: half move counter is an integer >= 0? */
-    temp = int.tryParse(tokens[4]);
-    if (temp != null) {
-      if (temp < 0) {
-        return {'valid': false, 'error_number': 3, 'error': errors[3]};
+      /* 3rd criterion: half move counter is an integer >= 0? */
+      temp = int.tryParse(tokens[4]);
+      if (temp != null) {
+        if (temp < 0) {
+          return {'valid': false, 'error_number': 3, 'error': errors[3]};
+        }
       }
     }
 
