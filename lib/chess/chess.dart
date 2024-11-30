@@ -1397,6 +1397,10 @@ class Chess {
     return generate_fen();
   }
 
+  String get legacy_fen {
+    return generate_fen();
+  }
+
   /// return the san string representation of each move in history. Each string corresponds to one move.
   List<String?> san_moves() {
     /* pop all of history onto reversed_history */
