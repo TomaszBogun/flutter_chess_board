@@ -1401,7 +1401,7 @@ class Chess {
   }
 
   String get legacy_fen {
-    return generate_fen();
+    return generate_legacy_fen();
   }
 
   /// return the san string representation of each move in history. Each string corresponds to one move.
