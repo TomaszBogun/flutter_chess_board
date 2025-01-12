@@ -61,7 +61,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
         FromToMove? squaresToHighlight = null;
         if(widget.highlightLastMoveSquares){
-          squaresToHighlight = getSquaresToHighlight(widget.controller, widget.boardOrientation);
+          squaresToHighlight = getSquaresToHighlight(widget.controller.game, widget.boardOrientation);
         }
 
 
@@ -285,8 +285,8 @@ class _ChessBoardState extends State<ChessBoard> {
 }
 
 // gets from and to square of the last move
-FromToMove? getSquaresToHighlight(ChessBoardController controller, PlayerColor boardOrientation){
-  var history = controller.game.getHistory({"verbose": true});
+FromToMove? getSquaresToHighlight(Chess chessGame, PlayerColor boardOrientation){
+  var history = chessGame.getHistory({"verbose": true});
   if (history == null || history.isEmpty){
     return null;
   }
