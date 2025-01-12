@@ -28,12 +28,9 @@ class StaticChessBoard extends StatefulWidget{
 
   final VoidCallback? beforeMove;
 
-  final List<BoardArrow> arrows;
-
   final bool highlightLastMoveSquares;
 
   final dynamic highlightLastMoveSquaresColor;
-
 
   const StaticChessBoard({
     Key? key,
@@ -47,7 +44,6 @@ class StaticChessBoard extends StatefulWidget{
     this.beforeMove,
     this.highlightLastMoveSquares = true,
     required this.highlightLastMoveSquaresColor,
-    this.arrows = const [],
   }) : super(key: key);
 
   @override

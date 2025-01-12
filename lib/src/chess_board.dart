@@ -2,7 +2,6 @@ import 'dart:math';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:flutter/material.dart';
 import '../chess/chess.dart' hide State;
-import 'board_arrow.dart';
 import 'chess_board_controller.dart';
 import 'constants.dart';
 import "dart:ui" as ui;
@@ -29,8 +28,6 @@ class ChessBoard extends StatefulWidget {
 
   final VoidCallback? beforeMove;
 
-  final List<BoardArrow> arrows;
-
   final bool highlightLastMoveSquares;
 
   final ui.Color highlightLastMoveSquaresColor;
@@ -47,7 +44,6 @@ class ChessBoard extends StatefulWidget {
     this.beforeMove,
     this.highlightLastMoveSquares = true,
     required this.highlightLastMoveSquaresColor,
-    this.arrows = const [],
   }) : super(key: key);
 
   @override
@@ -279,18 +275,6 @@ class _ChessBoardState extends State<ChessBoard> {
                   physics: NeverScrollableScrollPhysics(),
                 ),
               ),
-
-              // drawing arrows
-              if (widget.arrows.isNotEmpty)IgnorePointer(
-                child: AspectRatio(
-                  aspectRatio: 1.0,
-                  child: CustomPaint(
-                    child: Container(),
-                    painter:
-                        _ArrowPainter(widget.arrows, widget.boardOrientation),
-                  ),
-                ),
-              ),
             ],
           ),
         );
@@ -430,102 +414,6 @@ class PieceMoveData {
     required this.pieceType,
     required this.pieceColor,
   });
-}
-
-class _ArrowPainter extends CustomPainter {
-  List<BoardArrow> arrows;
-  PlayerColor boardOrientation;
-
-  _ArrowPainter(this.arrows, this.boardOrientation);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    var blockSize = size.width / 8;
-    var halfBlockSize = size.width / 16;
-
-    for (var arrow in arrows) {
-      var startFile = files.indexOf(arrow.from[0]);
-      var startRank = int.parse(arrow.from[1]) - 1;
-      var endFile = files.indexOf(arrow.to[0]);
-      var endRank = int.parse(arrow.to[1]) - 1;
-
-      int effectiveRowStart = 0;
-      int effectiveColumnStart = 0;
-      int effectiveRowEnd = 0;
-      int effectiveColumnEnd = 0;
-
-      if (boardOrientation == PlayerColor.black) {
-        effectiveColumnStart = 7 - startFile;
-        effectiveColumnEnd = 7 - endFile;
-        effectiveRowStart = startRank;
-        effectiveRowEnd = endRank;
-      } else {
-        effectiveColumnStart = startFile;
-        effectiveColumnEnd = endFile;
-        effectiveRowStart = 7 - startRank;
-        effectiveRowEnd = 7 - endRank;
-      }
-
-      var startOffset = Offset(
-          ((effectiveColumnStart + 1) * blockSize) - halfBlockSize,
-          ((effectiveRowStart + 1) * blockSize) - halfBlockSize);
-      var endOffset = Offset(
-          ((effectiveColumnEnd + 1) * blockSize) - halfBlockSize,
-          ((effectiveRowEnd + 1) * blockSize) - halfBlockSize);
-
-      var yDist = 0.8 * (endOffset.dy - startOffset.dy);
-      var xDist = 0.8 * (endOffset.dx - startOffset.dx);
-
-      var paint = Paint()
-        ..strokeWidth = halfBlockSize * 0.8
-        ..color = arrow.color;
-
-      canvas.drawLine(startOffset,
-          Offset(startOffset.dx + xDist, startOffset.dy + yDist), paint);
-
-      var slope =
-          (endOffset.dy - startOffset.dy) / (endOffset.dx - startOffset.dx);
-
-      var newLineSlope = -1 / slope;
-
-      var points = _getNewPoints(
-          Offset(startOffset.dx + xDist, startOffset.dy + yDist),
-          newLineSlope,
-          halfBlockSize);
-      var newPoint1 = points[0];
-      var newPoint2 = points[1];
-
-      var path = Path();
-
-      path.moveTo(endOffset.dx, endOffset.dy);
-      path.lineTo(newPoint1.dx, newPoint1.dy);
-      path.lineTo(newPoint2.dx, newPoint2.dy);
-      path.close();
-
-      canvas.drawPath(path, paint);
-    }
-  }
-
-  List<Offset> _getNewPoints(Offset start, double slope, double length) {
-    if (slope == double.infinity || slope == double.negativeInfinity) {
-      return [
-        Offset(start.dx, start.dy + length),
-        Offset(start.dx, start.dy - length)
-      ];
-    }
-
-    return [
-      Offset(start.dx + (length / sqrt(1 + (slope * slope))),
-          start.dy + ((length * slope) / sqrt(1 + (slope * slope)))),
-      Offset(start.dx - (length / sqrt(1 + (slope * slope))),
-          start.dy - ((length * slope) / sqrt(1 + (slope * slope)))),
-    ];
-  }
-
-  @override
-  bool shouldRepaint(_ArrowPainter oldDelegate) {
-    return arrows != oldDelegate.arrows;
-  }
 }
 
 
