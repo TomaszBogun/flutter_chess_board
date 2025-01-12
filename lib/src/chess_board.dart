@@ -33,7 +33,7 @@ class ChessBoard extends StatefulWidget {
 
   final bool highlightLastMoveSquares;
 
-  final ui.Color highlightLastmoveSquaresColor;
+  final ui.Color highlightLastMoveSquaresColor;
 
   const ChessBoard({
     Key? key,
@@ -46,7 +46,7 @@ class ChessBoard extends StatefulWidget {
     this.onMove,
     this.beforeMove,
     this.highlightLastMoveSquares = true,
-    required this.highlightLastmoveSquaresColor,
+    required this.highlightLastMoveSquaresColor,
     this.arrows = const [],
   }) : super(key: key);
 
@@ -65,7 +65,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
         FromToMove? squaresToHighlight = null;
         if(widget.highlightLastMoveSquares){
-          squaresToHighlight = getSquaresToHighlight();
+          squaresToHighlight = getSquaresToHighlight(widget.controller, widget.boardOrientation);
         }
 
 
@@ -76,7 +76,7 @@ class _ChessBoardState extends State<ChessBoard> {
             children: [
               // actual board images
               AspectRatio(
-                child: _getBoardImage(widget.boardColor),
+                child: getBoardImage(widget.boardColor),
                 aspectRatio: 1.0,
               ),
 
@@ -90,7 +90,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       left: squaresToHighlight.fromX * (widget.size!/8),
                       bottom: squaresToHighlight.fromY * (widget.size!/8),
                       child: Container(
-                        color: widget.highlightLastmoveSquaresColor.withOpacity(0.45),
+                        color: widget.highlightLastMoveSquaresColor.withOpacity(0.45),
                         width: widget.size!/8,
                         height: widget.size!/8,
                       ),
@@ -99,7 +99,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       left: squaresToHighlight.toX * (widget.size!/8),
                       bottom: squaresToHighlight.toY * (widget.size!/8),
                       child: Container(
-                        color: widget.highlightLastmoveSquaresColor.withOpacity(0.45),
+                        color: widget.highlightLastMoveSquaresColor.withOpacity(0.45),
                         width: widget.size!/8,
                         height: widget.size!/8,
                       ),
@@ -204,26 +204,16 @@ class _ChessBoardState extends State<ChessBoard> {
               AspectRatio(
                 aspectRatio: 1.0,
                 child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 8),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 8),
                   itemBuilder: (context, index) {
                     var row = index ~/ 8;
                     var column = index % 8;
-                    var boardRank = widget.boardOrientation == PlayerColor.black
-                        ? '${row + 1}'
-                        : '${(7 - row) + 1}';
-                    var boardFile = widget.boardOrientation == PlayerColor.white
-                        ? '${files[column]}'
-                        : '${files[7 - column]}';
-
+                    var boardRank = widget.boardOrientation == PlayerColor.black ? '${row + 1}' : '${(7 - row) + 1}';
+                    var boardFile = widget.boardOrientation == PlayerColor.white ? '${files[column]}' : '${files[7 - column]}';
                     var squareName = '$boardFile$boardRank';
                     var pieceOnSquare = game.get(squareName);
 
-                    var piece = BoardPiece(
-                      squareName: squareName,
-                      game: game,
-                      size: widget.size!,
-                    );
+                    var piece = BoardPiece(squareName: squareName, game: game, size: widget.size!,);
 
                     var draggable = game.get(squareName) != null
                         ? Draggable<PieceMoveData>(
@@ -237,15 +227,13 @@ class _ChessBoardState extends State<ChessBoard> {
                             childWhenDragging: SizedBox(),
                             data: PieceMoveData(
                               squareName: squareName,
-                              pieceType:
-                                  pieceOnSquare?.type.toUpperCase() ?? 'P',
+                              pieceType: pieceOnSquare?.type.toUpperCase() ?? 'P',
                               pieceColor: pieceOnSquare?.color ?? Color.WHITE,
                             ),
                           )
                         : Container();
 
-                    var dragTarget =
-                        DragTarget<PieceMoveData>(builder: (context, list, _) {
+                    var dragTarget = DragTarget<PieceMoveData>(builder: (context, list, _) {
                       return draggable;
                     }, onWillAccept: (pieceMoveData) {
                       return widget.enableUserMoves ? true : false;
@@ -310,66 +298,30 @@ class _ChessBoardState extends State<ChessBoard> {
     );
   }
 
-  // gets from and to square of the last move
-  FromToMove? getSquaresToHighlight(){
+}
 
-    var history = widget.controller.game.getHistory({"verbose": true});
-
-    if (history == null || history.isEmpty){
-      return null;
-    }
-
-    var lastMove = history.last;
-
-    String from = lastMove["from"].replaceAll("a","1").replaceAll("b","2").replaceAll("c","3").replaceAll("d","4").replaceAll("e","5").replaceAll("f","6").replaceAll("g","7").replaceAll("h","8");
-    String to = lastMove["to"].replaceAll("a","1").replaceAll("b","2").replaceAll("c","3").replaceAll("d","4").replaceAll("e","5").replaceAll("f","6").replaceAll("g","7").replaceAll("h","8");
-    int fromX = int.parse(from.substring(0, 1)) - 1;
-    int fromY = int.parse(from.substring(1, 2)) - 1;
-    int toX = int.parse(to.substring(0, 1)) - 1;
-    int toY = int.parse(to.substring(1, 2)) - 1;
-
-
-    if(widget.boardOrientation == PlayerColor.black){
-      fromX = 7-fromX;
-      fromY = 7-fromY;
-      toX = 7-toX;
-      toY = 7-toY;
-    }
-
-
-    return FromToMove(fromX, fromY, toX, toY);
-
+// gets from and to square of the last move
+FromToMove? getSquaresToHighlight(ChessBoardController controller, PlayerColor boardOrientation){
+  var history = controller.game.getHistory({"verbose": true});
+  if (history == null || history.isEmpty){
+    return null;
   }
+  var lastMove = history.last;
 
-  /// Returns the board image
-  Image _getBoardImage(BoardColor color) {
-    switch (color) {
-      case BoardColor.brown:
-        return Image.asset(
-          "images/brown_board.png",
-          package: 'flutter_chess_board',
-          fit: BoxFit.cover,
-        );
-      case BoardColor.darkBrown:
-        return Image.asset(
-          "images/dark_brown_board.png",
-          package: 'flutter_chess_board',
-          fit: BoxFit.cover,
-        );
-      case BoardColor.green:
-        return Image.asset(
-          "images/green_board.png",
-          package: 'flutter_chess_board',
-          fit: BoxFit.cover,
-        );
-      case BoardColor.orange:
-        return Image.asset(
-          "images/orange_board.png",
-          package: 'flutter_chess_board',
-          fit: BoxFit.cover,
-        );
-    }
+  String from = lastMove["from"].replaceAll("a","1").replaceAll("b","2").replaceAll("c","3").replaceAll("d","4").replaceAll("e","5").replaceAll("f","6").replaceAll("g","7").replaceAll("h","8");
+  String to = lastMove["to"].replaceAll("a","1").replaceAll("b","2").replaceAll("c","3").replaceAll("d","4").replaceAll("e","5").replaceAll("f","6").replaceAll("g","7").replaceAll("h","8");
+  int fromX = int.parse(from.substring(0, 1)) - 1;
+  int fromY = int.parse(from.substring(1, 2)) - 1;
+  int toX = int.parse(to.substring(0, 1)) - 1;
+  int toY = int.parse(to.substring(1, 2)) - 1;
+
+  if(boardOrientation == PlayerColor.black){
+    fromX = 7-fromX;
+    fromY = 7-fromY;
+    toX = 7-toX;
+    toY = 7-toY;
   }
+  return FromToMove(fromX, fromY, toX, toY);
 }
 
 int getImageSize(double? size){
@@ -631,4 +583,34 @@ class FromToMove {
   final int toX;
   final int toY;
   const FromToMove(this.fromX, this.fromY, this.toX, this.toY);
+}
+
+/// Returns the board image
+Image getBoardImage(BoardColor color) {
+  switch (color) {
+    case BoardColor.brown:
+      return Image.asset(
+        "images/brown_board.png",
+        package: 'flutter_chess_board',
+        fit: BoxFit.cover,
+      );
+    case BoardColor.darkBrown:
+      return Image.asset(
+        "images/dark_brown_board.png",
+        package: 'flutter_chess_board',
+        fit: BoxFit.cover,
+      );
+    case BoardColor.green:
+      return Image.asset(
+        "images/green_board.png",
+        package: 'flutter_chess_board',
+        fit: BoxFit.cover,
+      );
+    case BoardColor.orange:
+      return Image.asset(
+        "images/orange_board.png",
+        package: 'flutter_chess_board',
+        fit: BoxFit.cover,
+      );
+  }
 }
