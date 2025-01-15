@@ -285,8 +285,6 @@ class _ChessBoardState extends State<ChessBoard> {
         // overlay widget to detect tap up and tap down
         return GestureDetector(
           onTapDown: (TapDownDetails details) async{
-            print("on tap down !!!");
-
             Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
             Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
 
@@ -296,23 +294,17 @@ class _ChessBoardState extends State<ChessBoard> {
                 // only run if piece if piece is selected (possible moves dots visible)
                 Point tapSource = Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y);
                 Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
-                print("tapSource: ${tapSource} tapDestination: ${tapDestination}");
                 if(widget.boardOrientation != PlayerColor.white){
-                  print("is not white");
                   tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
                   tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
-                  print("tapSource: ${tapSource} tapDestination: ${tapDestination}");
                 }
 
                 String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
                 String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
-                print("sourceSquareName: ${sourceSquareName}, destinationSquareName: ${destinationSquareName}");
 
                 bool pieceOnSourceSquareIsPawn = game.get(sourceSquareName)?.type.toUpperCase()  == "P";
                 bool movedFromRank7to8 = (tapDestination.y == 8 && tapSource.y == 7);
                 bool movedFromRank2to1 = (tapDestination.y == 2 && tapSource.y == 1);
-                print("pieceOnSourceSquareIsPawn: ${pieceOnSourceSquareIsPawn}, movedFromRank7to8: ${movedFromRank7to8}, movedFromRank2to1: ${movedFromRank2to1}");
-
 
                 Color moveColor = game.turn; // A way to check if move occurred.
                 if ((movedFromRank7to8 || (movedFromRank2to1)) && (pieceOnSourceSquareIsPawn)) {
@@ -335,10 +327,8 @@ class _ChessBoardState extends State<ChessBoard> {
               }
             }else{
               pieceTapped = !pieceTapped;
-              print("pieceTapped: ${pieceTapped}");
             }
             lastTappedPositionOnBoard = currentTapPositionOnBoard;
-            print("lastTappedPositionOnBoard: ${lastTappedPositionOnBoard}");
           },
           child: chessBoard,
         );
