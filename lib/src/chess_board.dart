@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chess_board/PossibleMovesDrawer.dart';
 import '../chess/chess.dart' hide State;
 import '../functions.dart';
 import 'chess_board_controller.dart';
@@ -53,7 +54,7 @@ class ChessBoard extends StatefulWidget {
 
 class _ChessBoardState extends State<ChessBoard> {
   bool pieceTapped = false;
-  Point lastTappedPosition = Point(-1, -1);
+  Point lastTappedPositionOnBoard = Point(-1, -1);
 
 
   @override
@@ -267,6 +268,16 @@ class _ChessBoardState extends State<ChessBoard> {
                   physics: NeverScrollableScrollPhysics(),
                 ),
               ),
+
+              // possible moves dots
+              if(pieceTapped) Container(
+                width: widget.size!,
+                height: widget.size!,
+                child: CustomPaint(
+                  foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardColor == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: lastTappedPositionOnBoard),
+                ),
+              ),
+
             ],
           ),
         );
@@ -279,11 +290,11 @@ class _ChessBoardState extends State<ChessBoard> {
             Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
             Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
 
-            if(currentTapPositionOnBoard.x.toInt() != lastTappedPosition.x.toInt() || currentTapPositionOnBoard.y.toInt() != lastTappedPosition.y.toInt()){
+            if(currentTapPositionOnBoard.x.toInt() != lastTappedPositionOnBoard.x.toInt() || currentTapPositionOnBoard.y.toInt() != lastTappedPositionOnBoard.y.toInt()){
               bool movePlayed = false;
               if(pieceTapped){
                 // only run if piece if piece is selected (possible moves dots visible)
-                Point tapSource = Point(lastTappedPosition.x, lastTappedPosition.y);
+                Point tapSource = Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y);
                 Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
                 print("tapSource: ${tapSource} tapDestination: ${tapDestination}");
                 if(widget.boardOrientation != PlayerColor.white){
@@ -326,8 +337,8 @@ class _ChessBoardState extends State<ChessBoard> {
               pieceTapped = !pieceTapped;
               print("pieceTapped: ${pieceTapped}");
             }
-            lastTappedPosition = currentTapPositionOnBoard;
-            print("lastTappedPosition: ${lastTappedPosition}");
+            lastTappedPositionOnBoard = currentTapPositionOnBoard;
+            print("lastTappedPositionOnBoard: ${lastTappedPositionOnBoard}");
           },
           child: chessBoard,
         );
