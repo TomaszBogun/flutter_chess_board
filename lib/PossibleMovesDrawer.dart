@@ -19,7 +19,7 @@ class PossibleMovesDrawer extends CustomPainter{
     paint.color = Color(0x67008800);
     double squareSize = size.width/8;
 
-    if(isWhite){
+    if(!isWhite){
       lastTappedPositionOnBoard = Point(9 - lastTappedPositionOnBoard.x, 9 - lastTappedPositionOnBoard.y);
     }
 
@@ -36,24 +36,20 @@ class PossibleMovesDrawer extends CustomPainter{
     }
 
     List<Point> toPositions = [];
-
     for(Move move in possibleMovesFromSquare){
       String toNumerical = move.toAlgebraic.replaceAll("a", "1").replaceAll("b", "2").replaceAll("c", "3").replaceAll("d", "4").replaceAll("e", "5").replaceAll("f", "6").replaceAll("g", "7").replaceAll("h", "8");
       int toX = int.parse(toNumerical[0]);
       int toY = int.parse(toNumerical[1]);
-
       toPositions.add(Point(toX, toY));
     }
 
     for(Point toPosition in toPositions){
       int x = toPosition.x.toInt();
       int y = 9 - toPosition.y.toInt();
-
-      if(isWhite){
+      if(!isWhite){
         x = 9 - x;
         y = 9 - y;
       }
-
       canvas.drawCircle(Offset((squareSize*x) - (squareSize/2), (squareSize*y) - (squareSize/2)), squareSize *0.25, paint);
     }
 
