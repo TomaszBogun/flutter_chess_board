@@ -329,6 +329,7 @@ class _ChessBoardState extends State<ChessBoard> {
               pieceTapped = !pieceTapped;
             }
             lastTappedPositionOnBoard = currentTapPositionOnBoard;
+            setState(() {});
           },
           child: chessBoard,
         );
