@@ -304,7 +304,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
                 bool pieceOnSourceSquareIsPawn = game.get(sourceSquareName)?.type.toUpperCase()  == "P";
                 bool movedFromRank7to8 = (tapDestination.y == 8 && tapSource.y == 7);
-                bool movedFromRank2to1 = (tapDestination.y == 2 && tapSource.y == 1);
+                bool movedFromRank2to1 = (tapDestination.y == 1 && tapSource.y == 2);
 
                 Color moveColor = game.turn; // A way to check if move occurred.
                 if ((movedFromRank7to8 || (movedFromRank2to1)) && (pieceOnSourceSquareIsPawn)) {
