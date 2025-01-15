@@ -15,19 +15,10 @@ class StaticChessBoard extends StatefulWidget{
   /// Size of chessboard
   final double? size;
 
-  /// A boolean which checks if the user should be allowed to make moves
-  final bool enableUserMoves;
-
-  final bool showBoardNumberAndLetters;
-
   /// The color type of the board
   final BoardColor boardColor;
 
   final PlayerColor boardOrientation;
-
-  final VoidCallback? onMove;
-
-  final VoidCallback? beforeMove;
 
   final bool highlightLastMoveSquares;
 
@@ -37,12 +28,8 @@ class StaticChessBoard extends StatefulWidget{
     Key? key,
     required this.chessGame,
     this.size,
-    this.showBoardNumberAndLetters = false,
-    this.enableUserMoves = true,
     this.boardColor = BoardColor.brown,
     this.boardOrientation = PlayerColor.white,
-    this.onMove,
-    this.beforeMove,
     this.highlightLastMoveSquares = true,
     required this.highlightLastMoveSquaresColor,
   }) : super(key: key);

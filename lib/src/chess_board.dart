@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:flutter/material.dart';
 import '../chess/chess.dart' hide State;
+import '../functions.dart';
 import 'chess_board_controller.dart';
 import 'constants.dart';
 import "dart:ui" as ui;
@@ -51,6 +52,10 @@ class ChessBoard extends StatefulWidget {
 }
 
 class _ChessBoardState extends State<ChessBoard> {
+  bool pieceTapped = false;
+  Point lastTappedPosition = Point(-1, -1);
+
+
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Chess>(
@@ -70,6 +75,55 @@ class _ChessBoardState extends State<ChessBoard> {
           height: widget.size,
           child: Stack(
             children: [
+              // overlay widget to detect tap up and tap down
+              GestureDetector(
+                onTapDown: (TapDownDetails details) async{
+                  Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
+                  Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
+
+                  if(currentTapPositionOnBoard.x.toInt() != lastTappedPosition.x.toInt() || currentTapPositionOnBoard.y.toInt() != lastTappedPosition.y.toInt()){
+                    bool movePlayed = false;
+                    if(pieceTapped){
+                      // only run if piece if piece is selected (possible moves dots visible)
+                      Point tapSource = Point(lastTappedPosition.x, lastTappedPosition.y);
+                      Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
+                      if(widget.boardOrientation != PlayerColor.white){
+                        tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
+                        tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
+                      }
+
+                      String sourceSquareName = '${files[tapDestination.x.toInt()]}${tapDestination.y}';
+                      String destinationSquareName = '${files[tapSource.x.toInt()]}${tapSource.y}';
+                      bool pieceOnSourceSquareIsPawn = game.get(destinationSquareName)?.type.toUpperCase()  == "P";
+                      bool movedFromRank7to8 = (tapDestination.y == 8 && tapSource.y == 7);
+                      bool movedFromRank2to1 = (tapDestination.y == 2 && tapSource.y == 1);
+
+                      Color moveColor = game.turn; // A way to check if move occurred.
+                      if ((movedFromRank7to8 || (movedFromRank2to1)) && (pieceOnSourceSquareIsPawn)) {
+                        var val = await _promotionDialog(context);
+                        if (val == null) {
+                          return;
+                        }
+                        widget.beforeMove?.call();
+                        widget.controller.makeMoveWithPromotion(from: sourceSquareName, to: destinationSquareName, pieceToPromoteTo: val,);
+                      } else {
+                        widget.beforeMove?.call();
+                        widget.controller.makeMove(from: sourceSquareName, to: destinationSquareName,);
+                      }
+                      if (game.turn != moveColor) {
+                        widget.onMove?.call();
+                      }
+                    }
+                    if(!movePlayed){
+                      pieceTapped = true;
+                    }
+                  }else{
+                    pieceTapped = !pieceTapped;
+                  }
+                  lastTappedPosition = currentTapPositionOnBoard;
+                },
+              ),
+
               // actual board images
               AspectRatio(
                 child: getBoardImage(widget.boardColor),
@@ -234,34 +288,21 @@ class _ChessBoardState extends State<ChessBoard> {
                     }, onWillAccept: (pieceMoveData) {
                       return widget.enableUserMoves ? true : false;
                     }, onAccept: (PieceMoveData pieceMoveData) async {
-                      // A way to check if move occurred.
-                      Color moveColor = game.turn;
+                      Color moveColor = game.turn; // A way to check if move occurred.
 
-                      if (pieceMoveData.pieceType == "P" &&
-                          ((pieceMoveData.squareName[1] == "7" &&
-                                  squareName[1] == "8" &&
-                                  pieceMoveData.pieceColor == Color.WHITE) ||
-                              (pieceMoveData.squareName[1] == "2" &&
-                                  squareName[1] == "1" &&
-                                  pieceMoveData.pieceColor == Color.BLACK))) {
+                      bool pieceOnSourceSquareIsPawn = pieceMoveData.pieceType == "P";
+                      bool movedFromRank7to8 = (pieceMoveData.squareName[1] == "7" && squareName[1] == "8");
+                      bool movedFromRank2to1 = (pieceMoveData.squareName[1] == "2" && squareName[1] == "1");
+                      if (pieceOnSourceSquareIsPawn && (movedFromRank7to8 || movedFromRank2to1)) {
                         var val = await _promotionDialog(context);
-
-                        if (val != null) {
-                          widget.beforeMove?.call();
-                          widget.controller.makeMoveWithPromotion(
-                            from: pieceMoveData.squareName,
-                            to: squareName,
-                            pieceToPromoteTo: val,
-                          );
-                        } else {
+                        if (val == null) {
                           return;
                         }
+                        widget.beforeMove?.call();
+                        widget.controller.makeMoveWithPromotion(from: pieceMoveData.squareName, to: squareName, pieceToPromoteTo: val,);
                       } else {
                         widget.beforeMove?.call();
-                        widget.controller.makeMove(
-                          from: pieceMoveData.squareName,
-                          to: squareName,
-                        );
+                        widget.controller.makeMove(from: pieceMoveData.squareName, to: squareName,);
                       }
                       if (game.turn != moveColor) {
                         widget.onMove?.call();
@@ -427,7 +468,7 @@ Future<String?> _promotionDialog(BuildContext context) async {
     barrierDismissible: false,
     builder: (BuildContext context) {
       return new AlertDialog(
-        title: new Text('Choose promotion'),
+        title: new Text("Choose promotion"),
         content: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
@@ -464,7 +505,7 @@ Future<String?> _promotionDialog(BuildContext context) async {
   });
 }
 
-// similar to move but we use this for hightlighting squares
+// similar to move but we use this for highlighting squares
 class FromToMove {
   final int fromX;
   final int fromY;
