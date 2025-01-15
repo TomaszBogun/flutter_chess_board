@@ -69,60 +69,11 @@ class _ChessBoardState extends State<ChessBoard> {
           squaresToHighlight = getSquaresToHighlight(widget.controller.game, widget.boardOrientation);
         }
 
-
-        return SizedBox(
+        var chessBoard = SizedBox(
           width: widget.size,
           height: widget.size,
           child: Stack(
             children: [
-              // overlay widget to detect tap up and tap down
-              GestureDetector(
-                onTapDown: (TapDownDetails details) async{
-                  Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
-                  Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
-
-                  if(currentTapPositionOnBoard.x.toInt() != lastTappedPosition.x.toInt() || currentTapPositionOnBoard.y.toInt() != lastTappedPosition.y.toInt()){
-                    bool movePlayed = false;
-                    if(pieceTapped){
-                      // only run if piece if piece is selected (possible moves dots visible)
-                      Point tapSource = Point(lastTappedPosition.x, lastTappedPosition.y);
-                      Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
-                      if(widget.boardOrientation != PlayerColor.white){
-                        tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
-                        tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
-                      }
-
-                      String sourceSquareName = '${files[tapDestination.x.toInt()]}${tapDestination.y}';
-                      String destinationSquareName = '${files[tapSource.x.toInt()]}${tapSource.y}';
-                      bool pieceOnSourceSquareIsPawn = game.get(destinationSquareName)?.type.toUpperCase()  == "P";
-                      bool movedFromRank7to8 = (tapDestination.y == 8 && tapSource.y == 7);
-                      bool movedFromRank2to1 = (tapDestination.y == 2 && tapSource.y == 1);
-
-                      Color moveColor = game.turn; // A way to check if move occurred.
-                      if ((movedFromRank7to8 || (movedFromRank2to1)) && (pieceOnSourceSquareIsPawn)) {
-                        var val = await _promotionDialog(context);
-                        if (val == null) {
-                          return;
-                        }
-                        widget.beforeMove?.call();
-                        widget.controller.makeMoveWithPromotion(from: sourceSquareName, to: destinationSquareName, pieceToPromoteTo: val,);
-                      } else {
-                        widget.beforeMove?.call();
-                        widget.controller.makeMove(from: sourceSquareName, to: destinationSquareName,);
-                      }
-                      if (game.turn != moveColor) {
-                        widget.onMove?.call();
-                      }
-                    }
-                    if(!movePlayed){
-                      pieceTapped = true;
-                    }
-                  }else{
-                    pieceTapped = !pieceTapped;
-                  }
-                  lastTappedPosition = currentTapPositionOnBoard;
-                },
-              ),
 
               // actual board images
               AspectRatio(
@@ -267,20 +218,20 @@ class _ChessBoardState extends State<ChessBoard> {
 
                     var draggable = game.get(squareName) != null
                         ? Draggable<PieceMoveData>(
-                            child: piece,
-                            feedback: SizedBox(
-                              width: widget.size! / 8,
-                              height: widget.size! / 8,
-                              child: piece,
-                            ),
-                            //feedbackOffset: Offset(widget.size! / 16, widget.size! / 16),
-                            childWhenDragging: SizedBox(),
-                            data: PieceMoveData(
-                              squareName: squareName,
-                              pieceType: pieceOnSquare?.type.toUpperCase() ?? 'P',
-                              pieceColor: pieceOnSquare?.color ?? Color.WHITE,
-                            ),
-                          )
+                      child: piece,
+                      feedback: SizedBox(
+                        width: widget.size! / 8,
+                        height: widget.size! / 8,
+                        child: piece,
+                      ),
+                      //feedbackOffset: Offset(widget.size! / 16, widget.size! / 16),
+                      childWhenDragging: SizedBox(),
+                      data: PieceMoveData(
+                        squareName: squareName,
+                        pieceType: pieceOnSquare?.type.toUpperCase() ?? 'P',
+                        pieceColor: pieceOnSquare?.color ?? Color.WHITE,
+                      ),
+                    )
                         : Container();
 
                     var dragTarget = DragTarget<PieceMoveData>(builder: (context, list, _) {
@@ -319,6 +270,68 @@ class _ChessBoardState extends State<ChessBoard> {
             ],
           ),
         );
+
+        // overlay widget to detect tap up and tap down
+        return GestureDetector(
+          onTapDown: (TapDownDetails details) async{
+            print("on tap down !!!");
+
+            Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
+            Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
+
+            if(currentTapPositionOnBoard.x.toInt() != lastTappedPosition.x.toInt() || currentTapPositionOnBoard.y.toInt() != lastTappedPosition.y.toInt()){
+              bool movePlayed = false;
+              if(pieceTapped){
+                // only run if piece if piece is selected (possible moves dots visible)
+                Point tapSource = Point(lastTappedPosition.x, lastTappedPosition.y);
+                Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
+                print("tapSource: ${tapSource} tapDestination: ${tapDestination}");
+                if(widget.boardOrientation != PlayerColor.white){
+                  print("is not white");
+                  tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
+                  tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
+                  print("tapSource: ${tapSource} tapDestination: ${tapDestination}");
+                }
+
+                String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
+                String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
+                print("sourceSquareName: ${sourceSquareName}, destinationSquareName: ${destinationSquareName}");
+
+                bool pieceOnSourceSquareIsPawn = game.get(sourceSquareName)?.type.toUpperCase()  == "P";
+                bool movedFromRank7to8 = (tapDestination.y == 8 && tapSource.y == 7);
+                bool movedFromRank2to1 = (tapDestination.y == 2 && tapSource.y == 1);
+                print("pieceOnSourceSquareIsPawn: ${pieceOnSourceSquareIsPawn}, movedFromRank7to8: ${movedFromRank7to8}, movedFromRank2to1: ${movedFromRank2to1}");
+
+
+                Color moveColor = game.turn; // A way to check if move occurred.
+                if ((movedFromRank7to8 || (movedFromRank2to1)) && (pieceOnSourceSquareIsPawn)) {
+                  var val = await _promotionDialog(context);
+                  if (val == null) {
+                    return;
+                  }
+                  widget.beforeMove?.call();
+                  widget.controller.makeMoveWithPromotion(from: sourceSquareName, to: destinationSquareName, pieceToPromoteTo: val,);
+                } else {
+                  widget.beforeMove?.call();
+                  widget.controller.makeMove(from: sourceSquareName, to: destinationSquareName,);
+                }
+                if (game.turn != moveColor) {
+                  widget.onMove?.call();
+                }
+              }
+              if(!movePlayed){
+                pieceTapped = true;
+              }
+            }else{
+              pieceTapped = !pieceTapped;
+              print("pieceTapped: ${pieceTapped}");
+            }
+            lastTappedPosition = currentTapPositionOnBoard;
+            print("lastTappedPosition: ${lastTappedPosition}");
+          },
+          child: chessBoard,
+        );
+
       },
     );
   }
