@@ -13,7 +13,7 @@ enum BoardColor {
 Map<BoardColor, List<Color>> boardColorToHexColor = {
   BoardColor.brown: [Color(0xfff0dab5), Color(0xffb58763)],
   BoardColor.darkBrown: [Color(0xffefdebf), Color(0xff7f6c63)],
-  BoardColor.green: [Color(0xfff0dab5), Color(0xffb58763)],
+  BoardColor.green: [Color(0xfffefffe), Color(0xff01a6ad)],
   BoardColor.orange: [Color(0xffefdebf), Color(0xffcd733a)],
 };
 
