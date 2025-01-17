@@ -10,12 +10,13 @@ Point getTapPositionOnBoard(Point tapPosition, double squareSize){
 }
 
 bool promotionMoveIsPossible(ChessBoardController chessController, String sourceSquareName, String destinationSquareName){
-  Color moveColorBeforeMove = chessController.game.turn;
-  chessController.makeMoveWithPromotion(from: sourceSquareName, to: destinationSquareName, pieceToPromoteTo: "q",);
-  Color moveColorAfterMove = chessController.game.turn;
-  if(moveColorBeforeMove != moveColorAfterMove){
-    chessController.game.undo_move();
-    return true;
+  List<Move> moves = chessController.game.generate_moves();
+  Map moveToCheck = {"from": sourceSquareName, "to": destinationSquareName, "promotion": "q"};
+
+  for (var i = 0; i < moves.length; i++) {
+    if (moveToCheck['from'] == moves[i].fromAlgebraic && moveToCheck['to'] == moves[i].toAlgebraic && moves[i].promotion != null) {
+      return true;
+    }
   }
   return false;
 }

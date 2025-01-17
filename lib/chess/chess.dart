@@ -1687,21 +1687,16 @@ class Chess {
     Move? move_obj;
     final moves = generate_moves();
 
-    if (move is String) {
-      /* convert the move string to a move object */
+    if (move is String) {/* convert the move string to a move object */
       for (var i = 0; i < moves.length; i++) {
         if (move == move_to_san(moves[i])) {
           move_obj = moves[i];
           break;
         }
       }
-    } else if (move is Map) {
-      /* convert the pretty move object to an ugly move object */
+    } else if (move is Map) {/* convert the pretty move object to an ugly move object */
       for (var i = 0; i < moves.length; i++) {
-        if (move['from'] == moves[i].fromAlgebraic &&
-            move['to'] == moves[i].toAlgebraic &&
-            (moves[i].promotion == null ||
-                move['promotion'] == moves[i].promotion!.name)) {
+        if (move['from'] == moves[i].fromAlgebraic && move['to'] == moves[i].toAlgebraic && (moves[i].promotion == null || move['promotion'] == moves[i].promotion!.name)) {
           move_obj = moves[i];
           break;
         }
