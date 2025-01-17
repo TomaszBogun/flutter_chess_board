@@ -270,7 +270,7 @@ class _ChessBoardState extends State<ChessBoard> {
                 width: widget.size!,
                 height: widget.size!,
                 child: CustomPaint(
-                  foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: lastTappedPositionOnBoard),
+                  foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y)),
                 ),
               ),
 
