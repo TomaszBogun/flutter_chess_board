@@ -76,11 +76,9 @@ class _ChessBoardState extends State<ChessBoard> {
           child: Stack(
             children: [
 
+
               // actual board images
-              AspectRatio(
-                child: getBoardImage(widget.boardColor),
-                aspectRatio: 1.0,
-              ),
+              getBoardWidget(widget.boardColor, widget.size!/8, widget.boardOrientation == PlayerColor.white),
 
               // highlights from and to squares
               if(squaresToHighlight != null && widget.highlightLastMoveSquares) Container(
@@ -526,32 +524,29 @@ class FromToMove {
   const FromToMove(this.fromX, this.fromY, this.toX, this.toY);
 }
 
-/// Returns the board image
-Image getBoardImage(BoardColor color) {
-  switch (color) {
-    case BoardColor.brown:
-      return Image.asset(
-        "images/brown_board.png",
-        package: 'flutter_chess_board',
-        fit: BoxFit.cover,
-      );
-    case BoardColor.darkBrown:
-      return Image.asset(
-        "images/dark_brown_board.png",
-        package: 'flutter_chess_board',
-        fit: BoxFit.cover,
-      );
-    case BoardColor.green:
-      return Image.asset(
-        "images/green_board.png",
-        package: 'flutter_chess_board',
-        fit: BoxFit.cover,
-      );
-    case BoardColor.orange:
-      return Image.asset(
-        "images/orange_board.png",
-        package: 'flutter_chess_board',
-        fit: BoxFit.cover,
-      );
+Widget getBoardWidget(BoardColor color, double size, bool isWhite){
+  var lightSquareColor = boardColorToHexColor[color]![0];
+  var darkSquareColor = boardColorToHexColor[color]![1];
+  if(!isWhite){
+    lightSquareColor = boardColorToHexColor[color]![1];
+    darkSquareColor = boardColorToHexColor[color]![0];
   }
+
+  return GridView.builder(
+    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 8,
+    ),
+    itemBuilder: (context, index) {
+      final row = index ~/ 8; // Integer division
+      final col = index % 8;
+      final isLightSquare = (row + col) % 2 == 0;
+      return Container(
+        height: size,
+        width: size,
+        color: isLightSquare ? lightSquareColor : darkSquareColor,
+      );
+    },
+    itemCount: 64,
+  );
+
 }
