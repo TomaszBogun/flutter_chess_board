@@ -78,7 +78,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
 
               // actual board images
-              getBoardWidget(widget.boardColor, widget.size!/8, widget.boardOrientation == PlayerColor.white),
+              getBoardWidget(widget.boardColor, widget.boardOrientation == PlayerColor.white),
 
               // highlights from and to squares
               if(squaresToHighlight != null && widget.highlightLastMoveSquares) Container(
@@ -524,7 +524,7 @@ class FromToMove {
   const FromToMove(this.fromX, this.fromY, this.toX, this.toY);
 }
 
-Widget getBoardWidget(BoardColor color, double size, bool isWhite){
+Widget getBoardWidget(BoardColor color, bool isWhite){
   var lightSquareColor = boardColorToHexColor[color]![0];
   var darkSquareColor = boardColorToHexColor[color]![1];
   if(!isWhite){
@@ -541,8 +541,6 @@ Widget getBoardWidget(BoardColor color, double size, bool isWhite){
       final col = index % 8;
       final isLightSquare = (row + col) % 2 == 0;
       return Container(
-        height: size,
-        width: size,
         color: isLightSquare ? lightSquareColor : darkSquareColor,
       );
     },

@@ -68,7 +68,7 @@ class _StaticChessboardState extends State<StaticChessBoard> {
       squaresToHighlight = getSquaresToHighlight(widget.chessGame, widget.boardOrientation);
     }
 
-    final boardImage = getBoardWidget(widget.boardColor, widget.size!/8, widget.boardOrientation == PlayerColor.white);
+    final boardImage = getBoardWidget(widget.boardColor, widget.boardOrientation == PlayerColor.white);
 
 
     final board = SizedBox.square(
