@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chess_board/PossibleMovesDrawer.dart';
+import 'package:flutter_chess_board/drawers/PossibleMovesDrawer.dart';
 import '../chess/chess.dart' hide State;
-import '../functions.dart';
+import '../functions/functions.dart';
 import 'chess_board_controller.dart';
 import 'constants.dart';
 import "dart:ui" as ui;
@@ -241,11 +241,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       return widget.enableUserMoves ? true : false;
                     }, onAccept: (PieceMoveData pieceMoveData) async {
                       Color moveColor = game.turn; // A way to check if move occurred.
-
-                      bool pieceOnSourceSquareIsPawn = pieceMoveData.pieceType == "P";
-                      bool movedFromRank7to8 = (pieceMoveData.squareName[1] == "7" && squareName[1] == "8");
-                      bool movedFromRank2to1 = (pieceMoveData.squareName[1] == "2" && squareName[1] == "1");
-                      if (pieceOnSourceSquareIsPawn && (movedFromRank7to8 || movedFromRank2to1)) {
+                      if (promotionMoveIsPossible(widget.controller, pieceMoveData.squareName, squareName)) {
                         var val = await _promotionDialog(context);
                         if (val == null) {
                           return;
@@ -301,13 +297,8 @@ class _ChessBoardState extends State<ChessBoard> {
 
                 String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
                 String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
-
-                bool pieceOnSourceSquareIsPawn = game.get(sourceSquareName)?.type.toUpperCase()  == "P";
-                bool movedFromRank7to8 = (tapDestination.y == 8 && tapSource.y == 7);
-                bool movedFromRank2to1 = (tapDestination.y == 1 && tapSource.y == 2);
-
                 Color moveColor = game.turn; // A way to check if move occurred.
-                if ((movedFromRank7to8 || (movedFromRank2to1)) && (pieceOnSourceSquareIsPawn)) {
+                if (promotionMoveIsPossible(widget.controller, sourceSquareName, destinationSquareName)) {
                   var val = await _promotionDialog(context);
                   if (val == null) {
                     return;
