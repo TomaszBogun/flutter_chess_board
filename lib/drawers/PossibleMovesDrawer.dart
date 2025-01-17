@@ -11,17 +11,17 @@ class PossibleMovesDrawer extends CustomPainter{
   ChessBoardController chessController;
   Point lastTappedPositionOnBoard;
 
-  PossibleMovesDrawer({required this.isWhite, required this.chessController, required this.lastTappedPositionOnBoard});
+  PossibleMovesDrawer({required this.isWhite, required this.chessController, required this.lastTappedPositionOnBoard}){
+    if(!isWhite){
+      lastTappedPositionOnBoard = Point(9 - lastTappedPositionOnBoard.x, 9 - lastTappedPositionOnBoard.y);
+    }
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()..strokeWidth=size.width/100;
     paint.color = Color(0x67008800);
     double squareSize = size.width/8;
-
-    if(!isWhite){
-      lastTappedPositionOnBoard = Point(9 - lastTappedPositionOnBoard.x, 9 - lastTappedPositionOnBoard.y);
-    }
 
     String file = lastTappedPositionOnBoard.x.toString().replaceAll("1", "a").replaceAll("2", "b").replaceAll("3", "c").replaceAll("4", "d").replaceAll("5", "e").replaceAll("6", "f").replaceAll("7", "g").replaceAll("8", "h");
     String rank = lastTappedPositionOnBoard.y.toString();

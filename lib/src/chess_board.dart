@@ -34,7 +34,7 @@ class ChessBoard extends StatefulWidget {
 
   final ui.Color highlightLastMoveSquaresColor;
 
-  const ChessBoard({
+  ChessBoard({
     Key? key,
     required this.controller,
     this.size,
@@ -253,6 +253,7 @@ class _ChessBoardState extends State<ChessBoard> {
                         widget.controller.makeMove(from: pieceMoveData.squareName, to: squareName,);
                       }
                       if (game.turn != moveColor) {
+                        pieceTapped = false;
                         widget.onMove?.call();
                       }
                     });
@@ -284,41 +285,46 @@ class _ChessBoardState extends State<ChessBoard> {
             Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
             Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
 
-            if(currentTapPositionOnBoard.x.toInt() != lastTappedPositionOnBoard.x.toInt() || currentTapPositionOnBoard.y.toInt() != lastTappedPositionOnBoard.y.toInt()){
-              bool movePlayed = false;
-              if(pieceTapped){
-                // only run if piece if piece is selected (possible moves dots visible)
-                Point tapSource = Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y);
-                Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
-                if(widget.boardOrientation != PlayerColor.white){
-                  tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
-                  tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
-                }
-
-                String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
-                String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
-                Color moveColor = game.turn; // A way to check if move occurred.
-                if (promotionMoveIsPossible(widget.controller, sourceSquareName, destinationSquareName)) {
-                  var val = await _promotionDialog(context);
-                  if (val == null) {
-                    return;
-                  }
-                  widget.beforeMove?.call();
-                  widget.controller.makeMoveWithPromotion(from: sourceSquareName, to: destinationSquareName, pieceToPromoteTo: val,);
-                } else {
-                  widget.beforeMove?.call();
-                  widget.controller.makeMove(from: sourceSquareName, to: destinationSquareName,);
-                }
-                if (game.turn != moveColor) {
-                  widget.onMove?.call();
-                }
-              }
-              if(!movePlayed){
-                pieceTapped = true;
-              }
-            }else{
+            if(currentTapPositionOnBoard.x.toInt() == lastTappedPositionOnBoard.x.toInt() && currentTapPositionOnBoard.y.toInt() == lastTappedPositionOnBoard.y.toInt()){
               pieceTapped = !pieceTapped;
+              setState(() {});
+              return;
             }
+
+
+            bool movePlayed = false;
+            if(pieceTapped){
+              // only run if piece if piece is selected (possible moves dots visible)
+              Point tapSource = Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y);
+              Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
+              if(widget.boardOrientation != PlayerColor.white){
+                tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
+                tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
+              }
+
+              String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
+              String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
+              Color moveColor = game.turn; // A way to check if move occurred.
+              if (promotionMoveIsPossible(widget.controller, sourceSquareName, destinationSquareName)) {
+                var val = await _promotionDialog(context);
+                if (val == null) {
+                  return;
+                }
+                widget.beforeMove?.call();
+                widget.controller.makeMoveWithPromotion(from: sourceSquareName, to: destinationSquareName, pieceToPromoteTo: val,);
+              } else {
+                widget.beforeMove?.call();
+                widget.controller.makeMove(from: sourceSquareName, to: destinationSquareName,);
+              }
+              if (game.turn != moveColor) {
+                pieceTapped = false;
+                widget.onMove?.call();
+              }
+            }
+            if(!movePlayed){
+              pieceTapped = true;
+            }
+
             lastTappedPositionOnBoard = currentTapPositionOnBoard;
             setState(() {});
           },
