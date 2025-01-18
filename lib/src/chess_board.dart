@@ -290,6 +290,7 @@ class _ChessBoardState extends State<ChessBoard> {
           }
           if (game.turn != moveColor) {
             pieceTapped = false;
+            print("setting pieceTapped to false");
             widget.onMove?.call();
           }
         });
@@ -316,17 +317,27 @@ class _ChessBoardState extends State<ChessBoard> {
   }
 
   void onBoardTap(TapDownDetails details, Chess game) async{
-    Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
-    Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
+    Point currentTapPositionOnBoard = getTapPositionOnBoard(Point(details.localPosition.dx, details.localPosition.dy), (widget.size!/8));
+    bool tapPositionSame = currentTapPositionOnBoard.x.toInt() == lastTappedPositionOnBoard.x.toInt() && currentTapPositionOnBoard.y.toInt() == lastTappedPositionOnBoard.y.toInt();
 
-    if(currentTapPositionOnBoard.x.toInt() == lastTappedPositionOnBoard.x.toInt() && currentTapPositionOnBoard.y.toInt() == lastTappedPositionOnBoard.y.toInt()){
+    // tapped = false, same = false
+    if(!pieceTapped && !tapPositionSame){
+      pieceTapped = true;
+      lastTappedPositionOnBoard = currentTapPositionOnBoard;
+      setState(() {});
+      return;
+    }
+
+    // tapped = false, same = true
+    if(!pieceTapped && tapPositionSame){
       pieceTapped = !pieceTapped;
       setState(() {});
       return;
     }
 
-    bool movePlayed = false;
-    if(pieceTapped){
+    // tapped = true, same = false
+    if(pieceTapped && !tapPositionSame){ // try move
+      print("3");
       // only run if piece if piece is selected (possible moves dots visible)
       Point tapSource = Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y);
       Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
@@ -334,7 +345,6 @@ class _ChessBoardState extends State<ChessBoard> {
         tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
         tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
       }
-
       String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
       String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
       Color moveColor = game.turn; // A way to check if move occurred.
@@ -351,15 +361,15 @@ class _ChessBoardState extends State<ChessBoard> {
       }
       if (game.turn != moveColor) {
         pieceTapped = false;
+        lastTappedPositionOnBoard = Point(-1, -1);
         widget.onMove?.call();
+      }else{
+        pieceTapped = true;
+        lastTappedPositionOnBoard = currentTapPositionOnBoard;
       }
+      setState(() {});
+      return;
     }
-    if(!movePlayed){
-      pieceTapped = true;
-    }
-
-    lastTappedPositionOnBoard = currentTapPositionOnBoard;
-    setState(() {});
   }
 }
 
