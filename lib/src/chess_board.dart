@@ -34,8 +34,7 @@ class ChessBoard extends StatefulWidget {
 
   final ui.Color mainColorForDrawing;
   final ui.Color possibleMoveDrawerColor;
-  final ui.Color engineMoveDrawerColorPrimary;
-  final ui.Color engineMoveDrawerColorSecondary;
+  final ui.Color engineMoveDrawerColor;
 
   ChessBoard({
     Key? key,
@@ -50,8 +49,7 @@ class ChessBoard extends StatefulWidget {
     this.highlightLastMoveSquares = true,
     required this.mainColorForDrawing,
     required this.possibleMoveDrawerColor,
-    required this.engineMoveDrawerColorPrimary,
-    required this.engineMoveDrawerColorSecondary,
+    required this.engineMoveDrawerColor,
   }) : super(key: key);
 
   @override
