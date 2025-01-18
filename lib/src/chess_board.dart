@@ -330,7 +330,7 @@ class _ChessBoardState extends State<ChessBoard> {
 
     // tapped = false, same = true
     if(!pieceTapped && tapPositionSame){
-      pieceTapped = !pieceTapped;
+      pieceTapped = true;
       setState(() {});
       return;
     }
@@ -367,6 +367,13 @@ class _ChessBoardState extends State<ChessBoard> {
         pieceTapped = true;
         lastTappedPositionOnBoard = currentTapPositionOnBoard;
       }
+      setState(() {});
+      return;
+    }
+
+    // tapped = true, same = true
+    if(pieceTapped && tapPositionSame){
+      pieceTapped = false;
       setState(() {});
       return;
     }
