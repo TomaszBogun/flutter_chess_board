@@ -3,6 +3,7 @@ import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/drawers/PossibleMovesDrawer.dart';
 import '../chess/chess.dart' hide State;
+import '../drawers/NextMoveDrawer.dart';
 import '../functions/functions.dart';
 import 'chess_board_controller.dart';
 import 'constants.dart';
@@ -36,6 +37,8 @@ class ChessBoard extends StatefulWidget {
   final ui.Color possibleMoveDrawerColor;
   final ui.Color engineMoveDrawerColor;
 
+  List<String> nextMovesArrowsNumerical;
+
   ChessBoard({
     Key? key,
     required this.controller,
@@ -50,6 +53,7 @@ class ChessBoard extends StatefulWidget {
     required this.mainColorForDrawing,
     required this.possibleMoveDrawerColor,
     required this.engineMoveDrawerColor,
+    this.nextMovesArrowsNumerical = const[],
   }) : super(key: key);
 
   @override
@@ -82,6 +86,12 @@ class _ChessBoardState extends State<ChessBoard> {
 
               // drawing pieces
               getPiecesWidget(game),
+
+              // next moves
+              getNextMovesDrawerWidget(),
+
+              // engine moves
+              // TODO
 
               // possible moves dots
               getPossibleMovesDotsWidget(),
@@ -295,6 +305,16 @@ class _ChessBoardState extends State<ChessBoard> {
       itemCount: 64,
       shrinkWrap: true,
       physics: NeverScrollableScrollPhysics(),
+    );
+  }
+
+  Widget getNextMovesDrawerWidget(){
+    return Container(
+      width: widget.size!,
+      height: widget.size!,
+      child: CustomPaint(
+        foregroundPainter: NextMoveDrawer(nextMovesArrowsNumerical: widget.nextMovesArrowsNumerical, isWhite: widget.boardOrientation == PlayerColor.white, color: widget.mainColorForDrawing),
+      ),
     );
   }
 
