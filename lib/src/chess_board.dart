@@ -3,7 +3,7 @@ import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/drawers/PossibleMovesDrawer.dart';
 import '../chess/chess.dart' hide State;
-import '../drawers/NextMoveDrawer.dart';
+import '../drawers/ArrowDrawer.dart';
 import '../functions/functions.dart';
 import 'chess_board_controller.dart';
 import 'constants.dart';
@@ -33,11 +33,18 @@ class ChessBoard extends StatefulWidget {
 
   final bool highlightLastMoveSquares;
 
-  final ui.Color mainColorForDrawing;
-  final ui.Color possibleMoveDrawerColor;
-  final ui.Color engineMoveDrawerColor;
+  // colors
+  final ui.Color mainColor;
+  final ui.Color possibleMovesDotsColor;
+  final ui.Color alreadyPlayedMovesArrowsColor;
+  final ui.Color engineMoveDrawerColor; // TODO
+  // TODO: hint squares
 
+  // arrows and shaped
   List<String> nextMovesArrowsNumerical;
+  List<String> alreadyPlayedMovesArrowsNumerical;
+  // TODO: engine moves
+  // TODO: hint squares
 
   ChessBoard({
     Key? key,
@@ -50,10 +57,14 @@ class ChessBoard extends StatefulWidget {
     this.onMove,
     this.beforeMove,
     this.highlightLastMoveSquares = true,
-    required this.mainColorForDrawing,
-    required this.possibleMoveDrawerColor,
+    // colors
+    required this.mainColor,
+    required this.possibleMovesDotsColor,
+    required this.alreadyPlayedMovesArrowsColor,
     required this.engineMoveDrawerColor,
+    // arrows and shapes
     this.nextMovesArrowsNumerical = const[],
+    this.alreadyPlayedMovesArrowsNumerical = const[],
   }) : super(key: key);
 
   @override
@@ -88,7 +99,7 @@ class _ChessBoardState extends State<ChessBoard> {
               getPiecesWidget(game),
 
               // next moves
-              getNextMovesDrawerWidget(),
+              getNextMovesWidget(),
 
               // engine moves
               // TODO
@@ -127,7 +138,7 @@ class _ChessBoardState extends State<ChessBoard> {
               left: squaresToHighlight.fromX * (widget.size!/8),
               bottom: squaresToHighlight.fromY * (widget.size!/8),
               child: Container(
-                color: widget.mainColorForDrawing.withOpacity(0.45),
+                color: widget.mainColor.withOpacity(0.45),
                 width: widget.size!/8,
                 height: widget.size!/8,
               ),
@@ -136,7 +147,7 @@ class _ChessBoardState extends State<ChessBoard> {
               left: squaresToHighlight.toX * (widget.size!/8),
               bottom: squaresToHighlight.toY * (widget.size!/8),
               child: Container(
-                color: widget.mainColorForDrawing.withOpacity(0.45),
+                color: widget.mainColor.withOpacity(0.45),
                 width: widget.size!/8,
                 height: widget.size!/8,
               ),
@@ -308,12 +319,22 @@ class _ChessBoardState extends State<ChessBoard> {
     );
   }
 
-  Widget getNextMovesDrawerWidget(){
+  Widget getAlreadyPlayedMovesWidget(){
     return Container(
       width: widget.size!,
       height: widget.size!,
       child: CustomPaint(
-        foregroundPainter: NextMoveDrawer(nextMovesArrowsNumerical: widget.nextMovesArrowsNumerical, isWhite: widget.boardOrientation == PlayerColor.white, color: widget.mainColorForDrawing),
+        foregroundPainter: ArrowDrawer(arrowsNumerical: widget.alreadyPlayedMovesArrowsNumerical, isWhite: widget.boardOrientation == PlayerColor.white, color: widget.alreadyPlayedMovesArrowsColor),
+      ),
+    );
+  }
+
+  Widget getNextMovesWidget(){
+    return Container(
+      width: widget.size!,
+      height: widget.size!,
+      child: CustomPaint(
+        foregroundPainter: ArrowDrawer(arrowsNumerical: widget.nextMovesArrowsNumerical, isWhite: widget.boardOrientation == PlayerColor.white, color: widget.mainColor),
       ),
     );
   }
@@ -324,7 +345,7 @@ class _ChessBoardState extends State<ChessBoard> {
         width: widget.size!,
         height: widget.size!,
         child: CustomPaint(
-          foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(widget.controller.lastTappedPositionOnBoard.x, widget.controller.lastTappedPositionOnBoard.y), color: widget.possibleMoveDrawerColor),
+          foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(widget.controller.lastTappedPositionOnBoard.x, widget.controller.lastTappedPositionOnBoard.y), color: widget.possibleMovesDotsColor),
         ),
       );
     }

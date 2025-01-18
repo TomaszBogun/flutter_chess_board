@@ -2,17 +2,17 @@
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 
-class NextMoveDrawer extends CustomPainter{
-  List<String> nextMovesArrowsNumerical;
+class ArrowDrawer extends CustomPainter{
+  List<String> arrowsNumerical;
   bool isWhite;
   Color color;
-  NextMoveDrawer({required this.nextMovesArrowsNumerical, required this.isWhite, required this.color});
+  ArrowDrawer({required this.arrowsNumerical, required this.isWhite, required this.color});
 
   @override
   void paint(Canvas canvas, Size size) {
     double sizeMultiplier = 1;
     Paint paint = Paint()..strokeWidth=size.width/(50*(1/sizeMultiplier))..color=color;
-    for (var nextMoveArrowNumerical in nextMovesArrowsNumerical){
+    for (var nextMoveArrowNumerical in arrowsNumerical){
       drawArrow(canvas, size, nextMoveArrowNumerical, color, isWhite, paint, sizeMultiplier);
     }
   }
