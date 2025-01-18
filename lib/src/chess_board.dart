@@ -29,10 +29,10 @@ class ChessBoard extends StatefulWidget {
 
   // colors
   final BoardColor boardColor;
-  final ui.Color mainColor;
-  final ui.Color possibleMovesDotsColor;
-  final ui.Color alreadyPlayedMovesArrowsColor;
-  final ui.Color engineMoveDrawerColor; // TODO
+  final ui.Color mainColor; // used for next moves arrows, hint squares, solution arrows
+  final ui.Color possibleMovesDotsColor; // used for drawing dots where pieces can go
+  final ui.Color alreadyPlayedMovesArrowsColor; // used for drawing arrows that user already played while training
+  final ui.Color engineMoveDrawerColor; // TODO: used for drawing engine moves
 
   // arrows and shapes
   List<String> nextMovesArrowsNumerical;
