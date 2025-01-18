@@ -59,8 +59,6 @@ class ChessBoard extends StatefulWidget {
 }
 
 class _ChessBoardState extends State<ChessBoard> {
-  bool pieceTapped = false;
-  Point lastTappedPositionOnBoard = Point(-1, -1);
 
 
   @override
@@ -289,8 +287,7 @@ class _ChessBoardState extends State<ChessBoard> {
             widget.controller.makeMove(from: pieceMoveData.squareName, to: squareName,);
           }
           if (game.turn != moveColor) {
-            pieceTapped = false;
-            print("setting pieceTapped to false");
+            widget.controller.pieceTapped = false;
             widget.onMove?.call();
           }
         });
@@ -304,12 +301,12 @@ class _ChessBoardState extends State<ChessBoard> {
   }
 
   Widget getPossibleMovesDotsWidget(){
-    if(pieceTapped) {
+    if(widget.controller.pieceTapped) {
       return Container(
         width: widget.size!,
         height: widget.size!,
         child: CustomPaint(
-          foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y), color: widget.possibleMoveDrawerColor),
+          foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(widget.controller.lastTappedPositionOnBoard.x, widget.controller.lastTappedPositionOnBoard.y), color: widget.possibleMoveDrawerColor),
         ),
       );
     }
@@ -318,28 +315,27 @@ class _ChessBoardState extends State<ChessBoard> {
 
   void onBoardTap(TapDownDetails details, Chess game) async{
     Point currentTapPositionOnBoard = getTapPositionOnBoard(Point(details.localPosition.dx, details.localPosition.dy), (widget.size!/8));
-    bool tapPositionSame = currentTapPositionOnBoard.x.toInt() == lastTappedPositionOnBoard.x.toInt() && currentTapPositionOnBoard.y.toInt() == lastTappedPositionOnBoard.y.toInt();
+    bool tapPositionSame = currentTapPositionOnBoard.x.toInt() == widget.controller.lastTappedPositionOnBoard.x.toInt() && currentTapPositionOnBoard.y.toInt() == widget.controller.lastTappedPositionOnBoard.y.toInt();
 
     // tapped = false, same = false
-    if(!pieceTapped && !tapPositionSame){
-      pieceTapped = true;
-      lastTappedPositionOnBoard = currentTapPositionOnBoard;
+    if(!widget.controller.pieceTapped && !tapPositionSame){
+      widget.controller.pieceTapped = true;
+      widget.controller.lastTappedPositionOnBoard = currentTapPositionOnBoard;
       setState(() {});
       return;
     }
 
     // tapped = false, same = true
-    if(!pieceTapped && tapPositionSame){
-      pieceTapped = true;
+    if(!widget.controller.pieceTapped && tapPositionSame){
+      widget.controller.pieceTapped = true;
       setState(() {});
       return;
     }
 
     // tapped = true, same = false
-    if(pieceTapped && !tapPositionSame){ // try move
-      print("3");
+    if(widget.controller.pieceTapped && !tapPositionSame){ // try move
       // only run if piece if piece is selected (possible moves dots visible)
-      Point tapSource = Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y);
+      Point tapSource = Point(widget.controller.lastTappedPositionOnBoard.x, widget.controller.lastTappedPositionOnBoard.y);
       Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
       if(widget.boardOrientation != PlayerColor.white){
         tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
@@ -360,20 +356,20 @@ class _ChessBoardState extends State<ChessBoard> {
         widget.controller.makeMove(from: sourceSquareName, to: destinationSquareName,);
       }
       if (game.turn != moveColor) {
-        pieceTapped = false;
-        lastTappedPositionOnBoard = Point(-1, -1);
+        widget.controller.pieceTapped = false;
+        widget.controller.lastTappedPositionOnBoard = Point(-1, -1);
         widget.onMove?.call();
       }else{
-        pieceTapped = true;
-        lastTappedPositionOnBoard = currentTapPositionOnBoard;
+        widget.controller.pieceTapped = true;
+        widget.controller.lastTappedPositionOnBoard = currentTapPositionOnBoard;
       }
       setState(() {});
       return;
     }
 
     // tapped = true, same = true
-    if(pieceTapped && tapPositionSame){
-      pieceTapped = false;
+    if(widget.controller.pieceTapped && tapPositionSame){
+      widget.controller.pieceTapped = false;
       setState(() {});
       return;
     }

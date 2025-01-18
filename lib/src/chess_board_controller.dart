@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import '../chess/chess.dart';
 import 'constants.dart';
@@ -5,6 +7,8 @@ import 'constants.dart';
 class ChessBoardController extends ValueNotifier<Chess> {
   late Chess game;
   List<String> previousFENs = []; // only works if used makeMove, makeMoveWithPromotion to get to current position
+  bool pieceTapped = false;
+  Point lastTappedPositionOnBoard = Point(-1, -1);
 
   factory ChessBoardController() => ChessBoardController._(Chess());
 
@@ -154,7 +158,7 @@ class ChessBoardController extends ValueNotifier<Chess> {
       case BoardPieceType.Rook:
         return Piece(PieceType.ROOK, convertedColor);
     }
-    
+
   }
-  
+
 }
