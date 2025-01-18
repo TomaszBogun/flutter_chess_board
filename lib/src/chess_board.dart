@@ -22,29 +22,27 @@ class ChessBoard extends StatefulWidget {
 
   final bool showBoardNumberAndLetters;
 
-  /// The color type of the board
-  final BoardColor boardColor;
-
   final PlayerColor boardOrientation;
-
-  final VoidCallback? onMove;
-
-  final VoidCallback? beforeMove;
 
   final bool highlightLastMoveSquares;
 
   // colors
+  final BoardColor boardColor;
   final ui.Color mainColor;
   final ui.Color possibleMovesDotsColor;
   final ui.Color alreadyPlayedMovesArrowsColor;
   final ui.Color engineMoveDrawerColor; // TODO
   // TODO: hint squares
 
-  // arrows and shaped
+  // arrows and shapes
   List<String> nextMovesArrowsNumerical;
   List<String> alreadyPlayedMovesArrowsNumerical;
   // TODO: engine moves
   // TODO: hint squares
+
+  // functions
+  final VoidCallback? onMove;
+  final VoidCallback? beforeMove;
 
   ChessBoard({
     Key? key,
@@ -52,19 +50,20 @@ class ChessBoard extends StatefulWidget {
     this.size,
     this.showBoardNumberAndLetters = false,
     this.enableUserMoves = true,
-    this.boardColor = BoardColor.brown,
     this.boardOrientation = PlayerColor.white,
-    this.onMove,
-    this.beforeMove,
     this.highlightLastMoveSquares = true,
     // colors
-    required this.mainColor,
-    required this.possibleMovesDotsColor,
-    required this.alreadyPlayedMovesArrowsColor,
-    required this.engineMoveDrawerColor,
+    this.boardColor = BoardColor.brown,
+    this.mainColor = const ui.Color(0x00ffffff),
+    this.possibleMovesDotsColor = const ui.Color(0x00ffffff),
+    this.alreadyPlayedMovesArrowsColor = const ui.Color(0x00ffffff),
+    this.engineMoveDrawerColor = const ui.Color(0x00ffffff),
     // arrows and shapes
     this.nextMovesArrowsNumerical = const[],
     this.alreadyPlayedMovesArrowsNumerical = const[],
+    // functions
+    this.onMove,
+    this.beforeMove,
   }) : super(key: key);
 
   @override
