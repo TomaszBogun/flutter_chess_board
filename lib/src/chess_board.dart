@@ -97,7 +97,10 @@ class _ChessBoardState extends State<ChessBoard> {
               // drawing pieces
               getPiecesWidget(game),
 
-              // next moves
+              // already played arrows
+              getAlreadyPlayedMovesWidget(),
+
+              // next moves arrows (or solution arrows)
               getNextMovesWidget(),
 
               // engine moves
@@ -105,6 +108,9 @@ class _ChessBoardState extends State<ChessBoard> {
 
               // possible moves dots
               getPossibleMovesDotsWidget(),
+
+              // square hint highlighter
+              // TODO
 
             ],
           ),
