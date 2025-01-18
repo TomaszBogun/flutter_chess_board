@@ -44,7 +44,7 @@ class _HomePageState extends State<HomePage> {
               child: ChessBoard(
                 controller: controller,
                 boardColor: BoardColor.orange,
-                boardOrientation: PlayerColor.white, highlightLastMoveSquaresColor: Colors.transparent,
+                boardOrientation: PlayerColor.white, mainColorForDrawing: Colors.transparent,
               ),
             ),
           ),

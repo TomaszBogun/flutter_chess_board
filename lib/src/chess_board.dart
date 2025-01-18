@@ -32,7 +32,10 @@ class ChessBoard extends StatefulWidget {
 
   final bool highlightLastMoveSquares;
 
-  final ui.Color highlightLastMoveSquaresColor;
+  final ui.Color mainColorForDrawing;
+  final ui.Color possibleMoveDrawerColor;
+  final ui.Color engineMoveDrawerColorPrimary;
+  final ui.Color engineMoveDrawerColorSecondary;
 
   ChessBoard({
     Key? key,
@@ -45,7 +48,10 @@ class ChessBoard extends StatefulWidget {
     this.onMove,
     this.beforeMove,
     this.highlightLastMoveSquares = true,
-    required this.highlightLastMoveSquaresColor,
+    required this.mainColorForDrawing,
+    required this.possibleMoveDrawerColor,
+    required this.engineMoveDrawerColorPrimary,
+    required this.engineMoveDrawerColorSecondary,
   }) : super(key: key);
 
   @override
@@ -83,14 +89,14 @@ class _ChessBoardState extends State<ChessBoard> {
               // highlights from and to squares
               if(squaresToHighlight != null && widget.highlightLastMoveSquares) Container(
                 width: widget.size!,
-                height: widget.size,
+                height: widget.size!,
                 child: Stack(
                   children: [
                     Positioned(
                       left: squaresToHighlight.fromX * (widget.size!/8),
                       bottom: squaresToHighlight.fromY * (widget.size!/8),
                       child: Container(
-                        color: widget.highlightLastMoveSquaresColor.withOpacity(0.45),
+                        color: widget.mainColorForDrawing.withOpacity(0.45),
                         width: widget.size!/8,
                         height: widget.size!/8,
                       ),
@@ -99,7 +105,7 @@ class _ChessBoardState extends State<ChessBoard> {
                       left: squaresToHighlight.toX * (widget.size!/8),
                       bottom: squaresToHighlight.toY * (widget.size!/8),
                       child: Container(
-                        color: widget.highlightLastMoveSquaresColor.withOpacity(0.45),
+                        color: widget.mainColorForDrawing.withOpacity(0.45),
                         width: widget.size!/8,
                         height: widget.size!/8,
                       ),
@@ -269,7 +275,7 @@ class _ChessBoardState extends State<ChessBoard> {
                 width: widget.size!,
                 height: widget.size!,
                 child: CustomPaint(
-                  foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y)),
+                  foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y), color: widget.possibleMoveDrawerColor),
                 ),
               ),
 

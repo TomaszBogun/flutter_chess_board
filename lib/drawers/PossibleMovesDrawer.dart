@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 
@@ -10,8 +10,9 @@ class PossibleMovesDrawer extends CustomPainter{
   bool isWhite;
   ChessBoardController chessController;
   Point lastTappedPositionOnBoard;
+  ui.Color color;
 
-  PossibleMovesDrawer({required this.isWhite, required this.chessController, required this.lastTappedPositionOnBoard}){
+  PossibleMovesDrawer({required this.isWhite, required this.chessController, required this.lastTappedPositionOnBoard, required this.color}){
     if(!isWhite){
       lastTappedPositionOnBoard = Point(9 - lastTappedPositionOnBoard.x, 9 - lastTappedPositionOnBoard.y);
     }
@@ -20,7 +21,7 @@ class PossibleMovesDrawer extends CustomPainter{
   @override
   void paint(Canvas canvas, Size size) {
     Paint paint = Paint()..strokeWidth=size.width/100;
-    paint.color = Color(0x67008800);
+    paint.color = color;
     double squareSize = size.width/8;
 
     String file = lastTappedPositionOnBoard.x.toString().replaceAll("1", "a").replaceAll("2", "b").replaceAll("3", "c").replaceAll("4", "d").replaceAll("5", "e").replaceAll("6", "f").replaceAll("7", "g").replaceAll("8", "h");
