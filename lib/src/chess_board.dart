@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/drawers/PossibleMovesDrawer.dart';
 import '../chess/chess.dart' hide State;
 import '../drawers/ArrowDrawer.dart';
+import '../drawers/HintSquareDrawer.dart';
 import '../functions/functions.dart';
 import 'chess_board_controller.dart';
 import 'constants.dart';
@@ -32,13 +33,12 @@ class ChessBoard extends StatefulWidget {
   final ui.Color possibleMovesDotsColor;
   final ui.Color alreadyPlayedMovesArrowsColor;
   final ui.Color engineMoveDrawerColor; // TODO
-  // TODO: hint squares
 
   // arrows and shapes
   List<String> nextMovesArrowsNumerical;
   List<String> alreadyPlayedMovesArrowsNumerical;
   // TODO: engine moves
-  // TODO: hint squares
+  List<String> hintSquarePositionsNumerical;
 
   // functions
   final VoidCallback? onMove;
@@ -61,6 +61,7 @@ class ChessBoard extends StatefulWidget {
     // arrows and shapes
     this.nextMovesArrowsNumerical = const[],
     this.alreadyPlayedMovesArrowsNumerical = const[],
+    this.hintSquarePositionsNumerical = const[],
     // functions
     this.onMove,
     this.beforeMove,
@@ -97,6 +98,9 @@ class _ChessBoardState extends State<ChessBoard> {
               // drawing pieces
               getPiecesWidget(game),
 
+              // square hint highlighter
+              getHintSquaresWidget(),
+
               // already played arrows
               getAlreadyPlayedMovesWidget(),
 
@@ -109,8 +113,6 @@ class _ChessBoardState extends State<ChessBoard> {
               // possible moves dots
               getPossibleMovesDotsWidget(),
 
-              // square hint highlighter
-              // TODO
 
             ],
           ),
@@ -125,6 +127,16 @@ class _ChessBoardState extends State<ChessBoard> {
         );
 
       },
+    );
+  }
+
+  Widget getHintSquaresWidget(){
+    return Container(
+      width: widget.size!,
+      height: widget.size!,
+      child: CustomPaint(
+        foregroundPainter: HintSquareDrawer(hintSquarePositionsNumerical: widget.hintSquarePositionsNumerical, isWhite: widget.boardOrientation == PlayerColor.white, color: widget.mainColor),
+      ),
     );
   }
 
