@@ -68,216 +68,27 @@ class _ChessBoardState extends State<ChessBoard> {
     return ValueListenableBuilder<Chess>(
       valueListenable: widget.controller,
       builder: (context, game, _) {
-        double buffer = 2;
-        double sizeToTextRatio = 0.25;
 
-        FromToMove? squaresToHighlight = null;
-        if(widget.highlightLastMoveSquares){
-          squaresToHighlight = getSquaresToHighlight(widget.controller.game, widget.boardOrientation);
-        }
 
         var chessBoard = SizedBox(
           width: widget.size,
           height: widget.size,
           child: Stack(
             children: [
-
-
-              // actual board images
+              // actual board image
               getBoardWidget(widget.boardColor, widget.boardOrientation == PlayerColor.white),
 
               // highlights from and to squares
-              if(squaresToHighlight != null && widget.highlightLastMoveSquares) Container(
-                width: widget.size!,
-                height: widget.size!,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: squaresToHighlight.fromX * (widget.size!/8),
-                      bottom: squaresToHighlight.fromY * (widget.size!/8),
-                      child: Container(
-                        color: widget.mainColorForDrawing.withOpacity(0.45),
-                        width: widget.size!/8,
-                        height: widget.size!/8,
-                      ),
-                    ),
-                    Positioned(
-                      left: squaresToHighlight.toX * (widget.size!/8),
-                      bottom: squaresToHighlight.toY * (widget.size!/8),
-                      child: Container(
-                        color: widget.mainColorForDrawing.withOpacity(0.45),
-                        width: widget.size!/8,
-                        height: widget.size!/8,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
+              getHighlightLastSquaresWidget(),
 
               // showing board number and letters widget
-              if (widget.showBoardNumberAndLetters) Container(
-                width: widget.size!,
-                height: widget.size!,
-                child: Stack(
-                  children: [
-                    Positioned(
-                      left: buffer,
-                      bottom: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.white ? "a" : "h", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      left: (1 * (widget.size!/8)) + buffer,
-                      bottom: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.white ? "b" : "g", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      left: (2 * (widget.size!/8)) + buffer,
-                      bottom: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.white ? "c" : "f", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      left: (3 * (widget.size!/8)) + buffer,
-                      bottom: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.white ? "d" : "e", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      left: (4 * (widget.size!/8)) + buffer,
-                      bottom: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.white ? "e" : "d", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      left: (5 * (widget.size!/8)) + buffer,
-                      bottom: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.white ? "f" : "c", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      left: (6 * (widget.size!/8)) + buffer,
-                      bottom: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.white ? "g" : "b", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      left: (7 * (widget.size!/8)) + buffer,
-                      bottom: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.white ? "h" : "a", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    ///################
-                    Positioned(
-                      right: buffer,
-                      top: buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.black ? "1" : "8", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      right: buffer,
-                      top: (1 * (widget.size!/8)) + buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.black ? "2" : "7", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      right: buffer,
-                      top: (2 * (widget.size!/8)) + buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.black ? "3" : "6", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      right: buffer,
-                      top: (3 * (widget.size!/8)) + buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.black ? "4" : "5", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      right: buffer,
-                      top: (4 * (widget.size!/8)) + buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.black ? "5" : "4", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      right: buffer,
-                      top: (5 * (widget.size!/8)) + buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.black ? "6" : "3", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      right: buffer,
-                      top: (6 * (widget.size!/8)) + buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.black ? "7" : "2", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                    Positioned(
-                      right: buffer,
-                      top: (7 * (widget.size!/8)) + buffer,
-                      child: Text(widget.boardOrientation == PlayerColor.black ? "8" : "1", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-                    ),
-                  ],
-                ),
-              ),
+              getBoardNumberAndLettersWidget(),
 
               // drawing pieces
-              AspectRatio(
-                aspectRatio: 1.0,
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 8),
-                  itemBuilder: (context, index) {
-                    var row = index ~/ 8;
-                    var column = index % 8;
-                    var boardRank = widget.boardOrientation == PlayerColor.black ? '${row + 1}' : '${(7 - row) + 1}';
-                    var boardFile = widget.boardOrientation == PlayerColor.white ? '${files[column]}' : '${files[7 - column]}';
-                    var squareName = '$boardFile$boardRank';
-                    var pieceOnSquare = game.get(squareName);
-
-                    var piece = BoardPiece(squareName: squareName, game: game, size: widget.size!,);
-
-                    var draggable = game.get(squareName) != null
-                        ? Draggable<PieceMoveData>(
-                      child: piece,
-                      feedback: SizedBox(
-                        width: widget.size! / 8,
-                        height: widget.size! / 8,
-                        child: piece,
-                      ),
-                      //feedbackOffset: Offset(widget.size! / 16, widget.size! / 16),
-                      childWhenDragging: SizedBox(),
-                      data: PieceMoveData(
-                        squareName: squareName,
-                        pieceType: pieceOnSquare?.type.toUpperCase() ?? 'P',
-                        pieceColor: pieceOnSquare?.color ?? Color.WHITE,
-                      ),
-                    )
-                        : Container();
-
-                    var dragTarget = DragTarget<PieceMoveData>(builder: (context, list, _) {
-                      return draggable;
-                    }, onWillAccept: (pieceMoveData) {
-                      return widget.enableUserMoves ? true : false;
-                    }, onAccept: (PieceMoveData pieceMoveData) async {
-                      Color moveColor = game.turn; // A way to check if move occurred.
-                      if (promotionMoveIsPossible(widget.controller, pieceMoveData.squareName, squareName)) {
-                        var val = await _promotionDialog(context);
-                        if (val == null) {
-                          return;
-                        }
-                        widget.beforeMove?.call();
-                        widget.controller.makeMoveWithPromotion(from: pieceMoveData.squareName, to: squareName, pieceToPromoteTo: val,);
-                      } else {
-                        widget.beforeMove?.call();
-                        widget.controller.makeMove(from: pieceMoveData.squareName, to: squareName,);
-                      }
-                      if (game.turn != moveColor) {
-                        pieceTapped = false;
-                        widget.onMove?.call();
-                      }
-                    });
-
-                    return dragTarget;
-                  },
-                  itemCount: 64,
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                ),
-              ),
+              getPiecesWidget(game),
 
               // possible moves dots
-              if(pieceTapped) Container(
-                width: widget.size!,
-                height: widget.size!,
-                child: CustomPaint(
-                  foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y), color: widget.possibleMoveDrawerColor),
-                ),
-              ),
+              getPossibleMovesDotsWidget(),
 
             ],
           ),
@@ -285,52 +96,8 @@ class _ChessBoardState extends State<ChessBoard> {
 
         // overlay widget to detect tap up and tap down
         return GestureDetector(
-          onTapDown: (TapDownDetails details) async{
-            Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
-            Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
-
-            if(currentTapPositionOnBoard.x.toInt() == lastTappedPositionOnBoard.x.toInt() && currentTapPositionOnBoard.y.toInt() == lastTappedPositionOnBoard.y.toInt()){
-              pieceTapped = !pieceTapped;
-              setState(() {});
-              return;
-            }
-
-
-            bool movePlayed = false;
-            if(pieceTapped){
-              // only run if piece if piece is selected (possible moves dots visible)
-              Point tapSource = Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y);
-              Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
-              if(widget.boardOrientation != PlayerColor.white){
-                tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
-                tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
-              }
-
-              String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
-              String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
-              Color moveColor = game.turn; // A way to check if move occurred.
-              if (promotionMoveIsPossible(widget.controller, sourceSquareName, destinationSquareName)) {
-                var val = await _promotionDialog(context);
-                if (val == null) {
-                  return;
-                }
-                widget.beforeMove?.call();
-                widget.controller.makeMoveWithPromotion(from: sourceSquareName, to: destinationSquareName, pieceToPromoteTo: val,);
-              } else {
-                widget.beforeMove?.call();
-                widget.controller.makeMove(from: sourceSquareName, to: destinationSquareName,);
-              }
-              if (game.turn != moveColor) {
-                pieceTapped = false;
-                widget.onMove?.call();
-              }
-            }
-            if(!movePlayed){
-              pieceTapped = true;
-            }
-
-            lastTappedPositionOnBoard = currentTapPositionOnBoard;
-            setState(() {});
+          onTapDown: (TapDownDetails details){
+            onBoardTap(details, game);
           },
           child: chessBoard,
         );
@@ -339,12 +106,267 @@ class _ChessBoardState extends State<ChessBoard> {
     );
   }
 
+  Widget getHighlightLastSquaresWidget(){
+    FromToMove? squaresToHighlight = null;
+    if(widget.highlightLastMoveSquares){
+      squaresToHighlight = getSquaresToHighlight(widget.controller.game, widget.boardOrientation);
+    }
+    if(squaresToHighlight != null && widget.highlightLastMoveSquares){
+      return Container(
+        width: widget.size!,
+        height: widget.size!,
+        child: Stack(
+          children: [
+            Positioned(
+              left: squaresToHighlight.fromX * (widget.size!/8),
+              bottom: squaresToHighlight.fromY * (widget.size!/8),
+              child: Container(
+                color: widget.mainColorForDrawing.withOpacity(0.45),
+                width: widget.size!/8,
+                height: widget.size!/8,
+              ),
+            ),
+            Positioned(
+              left: squaresToHighlight.toX * (widget.size!/8),
+              bottom: squaresToHighlight.toY * (widget.size!/8),
+              child: Container(
+                color: widget.mainColorForDrawing.withOpacity(0.45),
+                width: widget.size!/8,
+                height: widget.size!/8,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+    return SizedBox();
+  }
+
+  Widget getBoardNumberAndLettersWidget(){
+    double buffer = 2;
+    double sizeToTextRatio = 0.25;
+
+    if (widget.showBoardNumberAndLetters) {
+      return Container(
+        width: widget.size!,
+        height: widget.size!,
+        child: Stack(
+          children: [
+            Positioned(
+              left: buffer,
+              bottom: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.white ? "a" : "h", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              left: (1 * (widget.size!/8)) + buffer,
+              bottom: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.white ? "b" : "g", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              left: (2 * (widget.size!/8)) + buffer,
+              bottom: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.white ? "c" : "f", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              left: (3 * (widget.size!/8)) + buffer,
+              bottom: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.white ? "d" : "e", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              left: (4 * (widget.size!/8)) + buffer,
+              bottom: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.white ? "e" : "d", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              left: (5 * (widget.size!/8)) + buffer,
+              bottom: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.white ? "f" : "c", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              left: (6 * (widget.size!/8)) + buffer,
+              bottom: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.white ? "g" : "b", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              left: (7 * (widget.size!/8)) + buffer,
+              bottom: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.white ? "h" : "a", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            ///################
+            Positioned(
+              right: buffer,
+              top: buffer,
+              child: Text(widget.boardOrientation == PlayerColor.black ? "1" : "8", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              right: buffer,
+              top: (1 * (widget.size!/8)) + buffer,
+              child: Text(widget.boardOrientation == PlayerColor.black ? "2" : "7", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              right: buffer,
+              top: (2 * (widget.size!/8)) + buffer,
+              child: Text(widget.boardOrientation == PlayerColor.black ? "3" : "6", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              right: buffer,
+              top: (3 * (widget.size!/8)) + buffer,
+              child: Text(widget.boardOrientation == PlayerColor.black ? "4" : "5", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              right: buffer,
+              top: (4 * (widget.size!/8)) + buffer,
+              child: Text(widget.boardOrientation == PlayerColor.black ? "5" : "4", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              right: buffer,
+              top: (5 * (widget.size!/8)) + buffer,
+              child: Text(widget.boardOrientation == PlayerColor.black ? "6" : "3", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              right: buffer,
+              top: (6 * (widget.size!/8)) + buffer,
+              child: Text(widget.boardOrientation == PlayerColor.black ? "7" : "2", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![0], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+            Positioned(
+              right: buffer,
+              top: (7 * (widget.size!/8)) + buffer,
+              child: Text(widget.boardOrientation == PlayerColor.black ? "8" : "1", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![1], fontSize: (widget.size!/8)*sizeToTextRatio),),
+            ),
+          ],
+        ),
+      );
+    }
+    return SizedBox();
+  }
+
+  Widget getPiecesWidget(Chess game){
+    return GridView.builder(
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 8),
+      itemBuilder: (context, index) {
+        var row = index ~/ 8;
+        var column = index % 8;
+        var boardRank = widget.boardOrientation == PlayerColor.black ? '${row + 1}' : '${(7 - row) + 1}';
+        var boardFile = widget.boardOrientation == PlayerColor.white ? '${files[column]}' : '${files[7 - column]}';
+        var squareName = '$boardFile$boardRank';
+        var pieceOnSquare = game.get(squareName);
+
+        var piece = BoardPiece(squareName: squareName, game: game, size: widget.size!,);
+
+        var draggable = game.get(squareName) != null
+            ? Draggable<PieceMoveData>(
+          child: piece,
+          feedback: SizedBox(
+            width: widget.size! / 8,
+            height: widget.size! / 8,
+            child: piece,
+          ),
+          //feedbackOffset: Offset(widget.size! / 16, widget.size! / 16),
+          childWhenDragging: SizedBox(),
+          data: PieceMoveData(
+            squareName: squareName,
+            pieceType: pieceOnSquare?.type.toUpperCase() ?? 'P',
+            pieceColor: pieceOnSquare?.color ?? Color.WHITE,
+          ),
+        )
+            : Container();
+
+        var dragTarget = DragTarget<PieceMoveData>(builder: (context, list, _) {
+          return draggable;
+        }, onWillAccept: (pieceMoveData) {
+          return widget.enableUserMoves ? true : false;
+        }, onAccept: (PieceMoveData pieceMoveData) async {
+          Color moveColor = game.turn; // A way to check if move occurred.
+          if (promotionMoveIsPossible(widget.controller, pieceMoveData.squareName, squareName)) {
+            var val = await _promotionDialog(context);
+            if (val == null) {
+              return;
+            }
+            widget.beforeMove?.call();
+            widget.controller.makeMoveWithPromotion(from: pieceMoveData.squareName, to: squareName, pieceToPromoteTo: val,);
+          } else {
+            widget.beforeMove?.call();
+            widget.controller.makeMove(from: pieceMoveData.squareName, to: squareName,);
+          }
+          if (game.turn != moveColor) {
+            pieceTapped = false;
+            widget.onMove?.call();
+          }
+        });
+
+        return dragTarget;
+      },
+      itemCount: 64,
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+    );
+  }
+
+  Widget getPossibleMovesDotsWidget(){
+    if(pieceTapped) {
+      return Container(
+        width: widget.size!,
+        height: widget.size!,
+        child: CustomPaint(
+          foregroundPainter: PossibleMovesDrawer(isWhite: widget.boardOrientation == PlayerColor.white, chessController: widget.controller, lastTappedPositionOnBoard: Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y), color: widget.possibleMoveDrawerColor),
+        ),
+      );
+    }
+    return SizedBox();
+  }
+
+  void onBoardTap(TapDownDetails details, Chess game) async{
+    Point tapPosition = Point(details.localPosition.dx, details.localPosition.dy);
+    Point currentTapPositionOnBoard = getTapPositionOnBoard(tapPosition, (widget.size!/8));
+
+    if(currentTapPositionOnBoard.x.toInt() == lastTappedPositionOnBoard.x.toInt() && currentTapPositionOnBoard.y.toInt() == lastTappedPositionOnBoard.y.toInt()){
+      pieceTapped = !pieceTapped;
+      setState(() {});
+      return;
+    }
+
+    bool movePlayed = false;
+    if(pieceTapped){
+      // only run if piece if piece is selected (possible moves dots visible)
+      Point tapSource = Point(lastTappedPositionOnBoard.x, lastTappedPositionOnBoard.y);
+      Point tapDestination = Point(currentTapPositionOnBoard.x, currentTapPositionOnBoard.y);
+      if(widget.boardOrientation != PlayerColor.white){
+        tapSource = Point(9 - tapSource.x, 9 - tapSource.y);
+        tapDestination = Point(9 - tapDestination.x, 9 - tapDestination.y);
+      }
+
+      String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
+      String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
+      Color moveColor = game.turn; // A way to check if move occurred.
+      if (promotionMoveIsPossible(widget.controller, sourceSquareName, destinationSquareName)) {
+        var val = await _promotionDialog(context);
+        if (val == null) {
+          return;
+        }
+        widget.beforeMove?.call();
+        widget.controller.makeMoveWithPromotion(from: sourceSquareName, to: destinationSquareName, pieceToPromoteTo: val,);
+      } else {
+        widget.beforeMove?.call();
+        widget.controller.makeMove(from: sourceSquareName, to: destinationSquareName,);
+      }
+      if (game.turn != moveColor) {
+        pieceTapped = false;
+        widget.onMove?.call();
+      }
+    }
+    if(!movePlayed){
+      pieceTapped = true;
+    }
+
+    lastTappedPositionOnBoard = currentTapPositionOnBoard;
+    setState(() {});
+  }
 }
 
 // gets from and to square of the last move
 FromToMove? getSquaresToHighlight(Chess chessGame, PlayerColor boardOrientation){
   var history = chessGame.getHistory({"verbose": true});
-  if (history == null || history.isEmpty){
+  if (history.isEmpty){
     return null;
   }
   var lastMove = history.last;
@@ -474,9 +496,6 @@ class PieceMoveData {
 }
 
 
-Future<String?> showPromotionDialog(BuildContext context) async{
-  return await _promotionDialog(context);
-}
 
 Future<String?> _promotionDialog(BuildContext context) async {
   return showDialog<String>(
