@@ -32,12 +32,11 @@ class ChessBoard extends StatefulWidget {
   final ui.Color mainColor; // used for next moves arrows, hint squares, solution arrows
   final ui.Color possibleMovesDotsColor; // used for drawing dots where pieces can go
   final ui.Color alreadyPlayedMovesArrowsColor; // used for drawing arrows that user already played while training
-  final ui.Color engineMoveDrawerColor; // TODO: used for drawing engine moves
+  final ui.Color borderColor; // used for drawing red or green border on incorrect or correct move while training
 
   // arrows and shapes
   List<String> nextMovesArrowsNumerical;
   List<String> alreadyPlayedMovesArrowsNumerical;
-  // TODO: engine moves
   List<String> hintSquarePositionsNumerical;
 
   // functions
@@ -57,7 +56,7 @@ class ChessBoard extends StatefulWidget {
     this.mainColor = const ui.Color(0x00ffffff),
     this.possibleMovesDotsColor = const ui.Color(0x00ffffff),
     this.alreadyPlayedMovesArrowsColor = const ui.Color(0x00ffffff),
-    this.engineMoveDrawerColor = const ui.Color(0x00ffffff),
+    this.borderColor = const ui.Color(0x00ffffff),
     // arrows and shapes
     this.nextMovesArrowsNumerical = const[],
     this.alreadyPlayedMovesArrowsNumerical = const[],
@@ -89,6 +88,8 @@ class _ChessBoardState extends State<ChessBoard> {
               // actual board image
               getBoardWidget(widget.boardColor, widget.boardOrientation == PlayerColor.white),
 
+              getBorderWidget(),
+
               // highlights from and to squares
               getHighlightLastSquaresWidget(),
 
@@ -107,9 +108,6 @@ class _ChessBoardState extends State<ChessBoard> {
               // next moves arrows (or solution arrows)
               getNextMovesWidget(),
 
-              // engine moves
-              // TODO
-
               // possible moves dots
               getPossibleMovesDotsWidget(),
 
@@ -127,6 +125,20 @@ class _ChessBoardState extends State<ChessBoard> {
         );
 
       },
+    );
+  }
+
+  Widget getBorderWidget(){
+    double borderThicknessComparedToSingleChessBoardSquare = 0.1;
+    double chessBoardSquareSize = widget.size!/8;
+    double thicknessOfBorder = chessBoardSquareSize * borderThicknessComparedToSingleChessBoardSquare;
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.red, width: thicknessOfBorder),
+      ),
+      width: widget.size!-(thicknessOfBorder*2),
+      height: widget.size!-(thicknessOfBorder*2),
     );
   }
 
