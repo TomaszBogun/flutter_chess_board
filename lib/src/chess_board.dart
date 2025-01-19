@@ -137,8 +137,8 @@ class _ChessBoardState extends State<ChessBoard> {
       decoration: BoxDecoration(
         border: Border.all(color: widget.borderColor, width: thicknessOfBorder),
       ),
-      width: widget.size!-(thicknessOfBorder/2),
-      height: widget.size!-(thicknessOfBorder/2),
+      width: widget.size!,
+      height: widget.size!,
     );
   }
 
