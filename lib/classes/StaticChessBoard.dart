@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import '../chess/chess.dart' as c;
 import '../flutter_chess_board.dart';
+import '../functions/functions.dart';
 import 'BoardPiece.dart';
 import 'FromToMove.dart';
 
