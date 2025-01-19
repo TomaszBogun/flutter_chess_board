@@ -51,7 +51,7 @@ class PossibleMovesDrawer extends CustomPainter{
         x = 9 - x;
         y = 9 - y;
       }
-      canvas.drawCircle(Offset((squareSize*x) - (squareSize/2), (squareSize*y) - (squareSize/2)), squareSize *0.25, paint);
+      canvas.drawCircle(Offset((squareSize*x) - (squareSize/2), (squareSize*y) - (squareSize/2)), squareSize *0.2, paint);
     }
 
   }
