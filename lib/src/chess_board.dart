@@ -137,7 +137,7 @@ class _ChessBoardState extends State<ChessBoard> {
     if(!whiteKingAttacked){
       king = widget.controller.game.kings[Color.BLACK];
     }
-    String checkSquareNumerical = (king%8).toString() + (8-(king~/16)).toString();
+    String checkSquareNumerical = ((king%8)+1).toString() + (8-(king~/16)).toString();
 
     return Container(
       width: widget.size!,
