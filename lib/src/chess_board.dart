@@ -281,7 +281,7 @@ class _ChessBoardState extends State<ChessBoard> {
         var squareName = '$boardFile$boardRank';
         var pieceOnSquare = game.get(squareName);
 
-        var piece = BoardPiece(squareName: squareName, game: game, size: widget.size!,);
+        var piece = BoardPiece(squareName: squareName, game: game);
 
         var draggable = game.get(squareName) != null
             ? Draggable<PieceMoveData>(
@@ -461,39 +461,15 @@ FromToMove? getSquaresToHighlight(Chess chessGame, PlayerColor boardOrientation)
   return FromToMove(fromX, fromY, toX, toY);
 }
 
-int getImageSize(double? size){
-  if(size == null){
-    return 8;
-  }
-  if (size >= 128) {
-    return 256;
-  }
-  if (size >= 64) {
-    return 128;
-  }
-  if (size >= 32) {
-    return 64;
-  }
-  if (size >= 16) {
-    return 32;
-  }
-  if (size >= 8) {
-    return 16;
-  }
-  return 8;
-}
 
 class BoardPiece extends StatelessWidget {
   final String squareName;
   final Chess game;
-  final double? size;
 
   const BoardPiece({
     Key? key,
     required this.squareName,
     required this.game,
-    this.size,
-
   }) : super(key: key);
 
   @override
@@ -505,49 +481,44 @@ class BoardPiece extends StatelessWidget {
       return Container();
     }
 
-
-    int imageSize = getImageSize(size);
-    String sizeString = imageSize.toString();
-
-    String piece = (square?.color == Color.WHITE ? 'W' : 'B') +
-        (square?.type.toUpperCase() ?? 'P');
+    String piece = (square?.color == Color.WHITE ? 'W' : 'B') + (square?.type.toUpperCase() ?? 'P');
 
     switch (piece) {
       case "WP":
-        imageToDisplay = Image.asset("images/white-pawn-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/white-pawn-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "WR":
-        imageToDisplay = Image.asset("images/white-rook-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/white-rook-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "WN":
-        imageToDisplay = Image.asset("images/white-knight-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/white-knight-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "WB":
-        imageToDisplay = Image.asset("images/white-bishop-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/white-bishop-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "WQ":
-        imageToDisplay = Image.asset("images/white-queen-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/white-queen-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "WK":
-        imageToDisplay = Image.asset("images/white-king-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/white-king-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "BP":
-        imageToDisplay = Image.asset("images/black-pawn-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/black-pawn-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "BR":
-        imageToDisplay = Image.asset("images/black-rook-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/black-rook-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "BN":
-        imageToDisplay = Image.asset("images/black-knight-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/black-knight-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "BB":
-        imageToDisplay = Image.asset("images/black-bishop-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/black-bishop-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "BQ":
-        imageToDisplay = Image.asset("images/black-queen-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/black-queen-256_x_256.png", package: 'flutter_chess_board');
         break;
       case "BK":
-        imageToDisplay = Image.asset("images/black-king-${sizeString}_x_${sizeString}.png", package: 'flutter_chess_board');
+        imageToDisplay = Image.asset("images/black-king-256_x_256.png", package: 'flutter_chess_board');
         break;
       default:
         imageToDisplay = Container();

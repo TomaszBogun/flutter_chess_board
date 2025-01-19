@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:ui';
-
+import 'dart:ui' as ui;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
-
 import '../chess/chess.dart' as c;
 import '../flutter_chess_board.dart';
 
@@ -121,7 +119,7 @@ class _StaticChessboardState extends State<StaticChessBoard> {
                   var boardRank = widget.boardOrientation == PlayerColor.black ? '${row + 1}' : '${(7 - row) + 1}';
                   var boardFile = widget.boardOrientation == PlayerColor.white ? '${files[column]}' : '${files[7 - column]}';
                   var squareName = '$boardFile$boardRank';
-                  var piece = BoardPiece(squareName: squareName, game: widget.chessGame, size: widget.size!,);
+                  var piece = BoardPiece(squareName: squareName, game: widget.chessGame);
                   return piece;
                 },
                 itemCount: 64,
@@ -132,11 +130,83 @@ class _StaticChessboardState extends State<StaticChessBoard> {
         ],
       ),
     );
-
-
     return board;
   }
-
 }
 
 
+class BoardPieceForStaticChessBoard extends StatelessWidget {
+  final String squareName;
+  final c.Chess game;
+
+  const BoardPieceForStaticChessBoard({
+    Key? key,
+    required this.squareName,
+    required this.game,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    late Widget imageToDisplay;
+    var square = game.get(squareName);
+
+    if (game.get(squareName) == null) {
+      return Container();
+    }
+
+    String piece = (square?.color == c.Color.WHITE ? 'W' : 'B') + (square?.type.toUpperCase() ?? 'P');
+
+    switch (piece) {
+      case "WP":
+        imageToDisplay = Image.asset("images/white-pawn-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "WR":
+        imageToDisplay = Image.asset("images/white-rook-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "WN":
+        imageToDisplay = Image.asset("images/white-knight-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "WB":
+        imageToDisplay = Image.asset("images/white-bishop-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "WQ":
+        imageToDisplay = Image.asset("images/white-queen-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "WK":
+        imageToDisplay = Image.asset("images/white-king-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "BP":
+        imageToDisplay = Image.asset("images/black-pawn-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "BR":
+        imageToDisplay = Image.asset("images/black-rook-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "BN":
+        imageToDisplay = Image.asset("images/black-knight-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "BB":
+        imageToDisplay = Image.asset("images/black-bishop-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "BQ":
+        imageToDisplay = Image.asset("images/black-queen-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      case "BK":
+        imageToDisplay = Image.asset("images/black-king-64_x_64.png", package: 'flutter_chess_board');
+        break;
+      default:
+        imageToDisplay = Container();
+    }
+    return imageToDisplay;
+  }
+}
+
+void preloadBoardPieceForStaticChessBoards(BuildContext context) {
+  const pieces = ['pawn', 'rook', 'knight', 'bishop', 'queen', 'king'];
+  const colors = ['white', 'black'];
+  for (var color in colors) {
+    for (var piece in pieces) {
+      final assetPath = "images/$color-$piece-64_x_64.png";
+      precacheImage(AssetImage(assetPath, package: 'flutter_chess_board'), context);
+    }
+  }
+}
