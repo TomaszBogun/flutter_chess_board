@@ -135,10 +135,10 @@ class _ChessBoardState extends State<ChessBoard> {
 
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.red, width: thicknessOfBorder),
+        border: Border.all(color: widget.borderColor, width: thicknessOfBorder),
       ),
-      width: widget.size!-(thicknessOfBorder*2),
-      height: widget.size!-(thicknessOfBorder*2),
+      width: widget.size!-(thicknessOfBorder/2),
+      height: widget.size!-(thicknessOfBorder/2),
     );
   }
 
