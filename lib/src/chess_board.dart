@@ -92,6 +92,7 @@ class _ChessBoardState extends State<ChessBoard> {
               // highlights from and to squares
               getHighlightLastSquaresWidget(),
 
+              // used for highlighting the king square red if in check
               getKingCheckHighlighterWidget(),
 
               // showing board number and letters widget
@@ -218,100 +219,52 @@ class _ChessBoardState extends State<ChessBoard> {
     );
   }
 
-  Widget getBoardNumberAndLettersWidget(){
-    double buffer = 2;
-    double sizeToTextRatio = 0.25;
+  Widget getBoardNumberAndLettersWidget() {
+    const double buffer = 2;
+    const double sizeToTextRatio = 0.25;
 
-    if(!widget.showBoardNumberAndLetters){
+    if (!widget.showBoardNumberAndLetters) {
       return SizedBox();
     }
+
+    final List<String> files = widget.boardOrientation == PlayerColor.white ? ["a", "b", "c", "d", "e", "f", "g", "h"] : ["h", "g", "f", "e", "d", "c", "b", "a"];
+    final List<String> ranks = widget.boardOrientation == PlayerColor.white ? ["8", "7", "6", "5", "4", "3", "2", "1"] : ["1", "2", "3", "4", "5", "6", "7", "8"];
+
+    final double squareSize = widget.size! / 8;
+    final ui.Color textColor = boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1];
+    final ui.Color altTextColor = boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0];
 
     return Container(
       width: widget.size!,
       height: widget.size!,
       child: Stack(
         children: [
-          Positioned(
-            left: buffer,
-            bottom: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.white ? "a" : "h", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            left: (1 * (widget.size!/8)) + buffer,
-            bottom: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.white ? "b" : "g", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            left: (2 * (widget.size!/8)) + buffer,
-            bottom: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.white ? "c" : "f", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            left: (3 * (widget.size!/8)) + buffer,
-            bottom: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.white ? "d" : "e", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            left: (4 * (widget.size!/8)) + buffer,
-            bottom: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.white ? "e" : "d", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            left: (5 * (widget.size!/8)) + buffer,
-            bottom: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.white ? "f" : "c", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            left: (6 * (widget.size!/8)) + buffer,
-            bottom: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.white ? "g" : "b", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            left: (7 * (widget.size!/8)) + buffer,
-            bottom: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.white ? "h" : "a", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          ///################
-          Positioned(
-            right: buffer,
-            top: buffer,
-            child: Text(widget.boardOrientation == PlayerColor.black ? "1" : "8", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            right: buffer,
-            top: (1 * (widget.size!/8)) + buffer,
-            child: Text(widget.boardOrientation == PlayerColor.black ? "2" : "7", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            right: buffer,
-            top: (2 * (widget.size!/8)) + buffer,
-            child: Text(widget.boardOrientation == PlayerColor.black ? "3" : "6", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            right: buffer,
-            top: (3 * (widget.size!/8)) + buffer,
-            child: Text(widget.boardOrientation == PlayerColor.black ? "4" : "5", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            right: buffer,
-            top: (4 * (widget.size!/8)) + buffer,
-            child: Text(widget.boardOrientation == PlayerColor.black ? "5" : "4", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            right: buffer,
-            top: (5 * (widget.size!/8)) + buffer,
-            child: Text(widget.boardOrientation == PlayerColor.black ? "6" : "3", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            right: buffer,
-            top: (6 * (widget.size!/8)) + buffer,
-            child: Text(widget.boardOrientation == PlayerColor.black ? "7" : "2", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 0 : 1], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
-          Positioned(
-            right: buffer,
-            top: (7 * (widget.size!/8)) + buffer,
-            child: Text(widget.boardOrientation == PlayerColor.black ? "8" : "1", style: TextStyle(color: boardColorToHexColor[widget.boardColor]![widget.boardOrientation == PlayerColor.white ? 1 : 0], fontSize: (widget.size!/8)*sizeToTextRatio),),
-          ),
+          // Bottom letters (files)
+          for (int i = 0; i < 8; i++)
+            Positioned(
+              left: (i * squareSize) + buffer,
+              bottom: buffer,
+              child: Text(
+                files[i],
+                style: TextStyle(
+                  color: i % 2 == 0 ? textColor : altTextColor,
+                  fontSize: squareSize * sizeToTextRatio,
+                ),
+              ),
+            ),
+          // Right numbers (ranks)
+          for (int i = 0; i < 8; i++)
+            Positioned(
+              right: buffer,
+              top: (i * squareSize) + buffer,
+              child: Text(
+                ranks[i],
+                style: TextStyle(
+                  color: i % 2 == 0 ? textColor : altTextColor,
+                  fontSize: squareSize * sizeToTextRatio,
+                ),
+              ),
+            ),
         ],
       ),
     );
