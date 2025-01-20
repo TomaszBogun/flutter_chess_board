@@ -1,8 +1,8 @@
 import 'dart:math';
-import 'package:chess_vectors_flutter/chess_vectors_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/drawers/PossibleMovesDrawer.dart';
 import 'package:flutter_chess_board/drawers/KingCheckDrawer.dart';
+import 'package:tuple/tuple.dart';
 import '../chess/chess.dart' hide State;
 import '../drawers/ArrowDrawer.dart';
 import '../drawers/HintSquareDrawer.dart';
@@ -11,7 +11,6 @@ import 'BoardPiece.dart';
 import 'ChessBoardController.dart';
 import '../constants.dart';
 import "dart:ui" as ui;
-import 'FromToMove.dart';
 import 'PieceMoveData.dart';
 
 class ChessBoard extends StatefulWidget {
@@ -183,7 +182,7 @@ class _ChessBoardState extends State<ChessBoard> {
   }
 
   Widget getHighlightLastSquaresWidget(){
-    FromToMove? squaresToHighlight = null;
+    Tuple2<Point, Point>? squaresToHighlight = null;
     if(widget.highlightLastMoveSquares){
       squaresToHighlight = getSquaresToHighlight(widget.controller.game, widget.boardOrientation);
     }
@@ -198,8 +197,8 @@ class _ChessBoardState extends State<ChessBoard> {
       child: Stack(
         children: [
           Positioned(
-            left: squaresToHighlight.fromX * (widget.size!/8),
-            bottom: squaresToHighlight.fromY * (widget.size!/8),
+            left: squaresToHighlight.item1.x * (widget.size!/8),
+            bottom: squaresToHighlight.item1.y * (widget.size!/8),
             child: Container(
               color: widget.mainColor.withOpacity(0.45),
               width: widget.size!/8,
@@ -207,8 +206,8 @@ class _ChessBoardState extends State<ChessBoard> {
             ),
           ),
           Positioned(
-            left: squaresToHighlight.toX * (widget.size!/8),
-            bottom: squaresToHighlight.toY * (widget.size!/8),
+            left: squaresToHighlight.item2.x * (widget.size!/8),
+            bottom: squaresToHighlight.item2.y * (widget.size!/8),
             child: Container(
               color: widget.mainColor.withOpacity(0.45),
               width: widget.size!/8,

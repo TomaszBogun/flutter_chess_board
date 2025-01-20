@@ -185,7 +185,7 @@ packages:
     source: hosted
     version: "0.7.3"
   tuple:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: tuple
       sha256: fe3ae4f0dca3f9aac0888e2e0d117b642ce283a82d7017b54136290c0a3b0dd3
