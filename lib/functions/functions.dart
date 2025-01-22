@@ -31,10 +31,6 @@ bool promotionMoveIsPossible(ChessBoardController chessController, String source
 Widget getBoardWidget(BoardColor color, bool isWhite) {
   var lightSquareColor = boardColorToHexColor[color]![0];
   var darkSquareColor = boardColorToHexColor[color]![1];
-  if (!isWhite) {
-    lightSquareColor = boardColorToHexColor[color]![1];
-    darkSquareColor = boardColorToHexColor[color]![0];
-  }
 
   return GridView.builder(
     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
