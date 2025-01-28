@@ -22,7 +22,6 @@ class ChessBoardDrawer extends CustomPainter {
 
     for (int row = 0; row < 8; row++) {
       for (int col = 0; col < 8; col++) {
-        // Only draw the dark squares
         if ((row + col) & 1 != 0) {
           final Rect squareRect = Rect.fromLTWH(
             col * squareSize, // X position

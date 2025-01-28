@@ -85,7 +85,10 @@ class _ChessBoardState extends State<ChessBoard> {
           child: Stack(
             children: [
               // actual board image
-              getBoardWidget(widget.boardColor),
+              SizedBox.square(
+                dimension: widget.size,
+                child: getBoardWidget(widget.boardColor),
+              ),
 
               getBorderWidget(),
 

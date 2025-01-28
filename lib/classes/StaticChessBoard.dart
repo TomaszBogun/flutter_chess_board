@@ -68,9 +68,7 @@ class _StaticChessboardState extends State<StaticChessBoard> {
     if(widget.highlightLastMoveSquares){
       squaresToHighlight = getSquaresToHighlight(widget.chessGame, widget.boardOrientation);
     }
-
     final boardImage = getBoardWidget(widget.boardColor);
-
 
     final board = SizedBox.square(
       dimension: widget.size,
@@ -79,7 +77,10 @@ class _StaticChessboardState extends State<StaticChessBoard> {
         clipBehavior: Clip.none,
         children: [
           // board background
-          boardImage,
+          SizedBox.square(
+            dimension: widget.size,
+            child: boardImage,
+          ),
 
           // to & from square highlighter
           if(squaresToHighlight != null && widget.highlightLastMoveSquares) Container(
