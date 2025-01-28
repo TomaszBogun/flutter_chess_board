@@ -30,10 +30,12 @@ Widget getBoardWidget(BoardColor color) {
   var lightSquareColor = boardColorToHexColor[color]![0];
   var darkSquareColor = boardColorToHexColor[color]![1];
 
-  return CustomPaint(
-    painter: ChessBoardDrawer(
-      lightSquareColor: lightSquareColor,
-      darkSquareColor: darkSquareColor,
+  return Expanded(
+    child: CustomPaint(
+      painter: ChessBoardDrawer(
+        lightSquareColor: lightSquareColor,
+        darkSquareColor: darkSquareColor,
+      ),
     ),
   );
 }
