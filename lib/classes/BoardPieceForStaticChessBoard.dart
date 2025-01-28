@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
-
 import '../chess/chess.dart';
 
+// similar to class BoardPiece but uses lower resolution for efficiency
 class BoardPieceForStaticChessBoard extends StatelessWidget {
   final String squareName;
   final Chess game;

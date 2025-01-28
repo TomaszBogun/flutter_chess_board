@@ -2,11 +2,11 @@ import 'dart:async';
 import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_chess_board/classes/BoardPieceForStaticChessBoard.dart';
 import 'package:tuple/tuple.dart';
 import '../chess/chess.dart' as c;
 import '../flutter_chess_board.dart';
 import '../functions/functions.dart';
-import 'BoardPiece.dart';
 
 class StaticChessBoard extends StatefulWidget{
   /// An instance of [ChessBoardController] which holds the game and allows
@@ -64,12 +64,7 @@ class _StaticChessboardState extends State<StaticChessBoard> {
 
   @override
   Widget build(BuildContext context) {
-    Tuple2<Point, Point>? squaresToHighlight = null;
-    if(widget.highlightLastMoveSquares){
-      squaresToHighlight = getSquaresToHighlight(widget.chessGame, widget.boardOrientation);
-    }
     final boardImage = getBoardWidget(widget.boardColor);
-
     final board = SizedBox.square(
       dimension: widget.size,
       child: Stack(
@@ -81,38 +76,8 @@ class _StaticChessboardState extends State<StaticChessBoard> {
             dimension: widget.size,
             child: boardImage,
           ),
-
-          // to & from square highlighter
-          if(squaresToHighlight != null && widget.highlightLastMoveSquares) Container(
-            width: widget.size!,
-            height: widget.size,
-            child: Stack(
-              children: [
-                Positioned(
-                  left: squaresToHighlight.item1.x * (widget.size!/8),
-                  bottom: squaresToHighlight.item1.y * (widget.size!/8),
-                  child: Container(
-                    color: widget.highlightLastMoveSquaresColor.withOpacity(0.45),
-                    width: widget.size!/8,
-                    height: widget.size!/8,
-                  ),
-                ),
-                Positioned(
-                  left: squaresToHighlight.item2.x * (widget.size!/8),
-                  bottom: squaresToHighlight.item2.y * (widget.size!/8),
-                  child: Container(
-                    color: widget.highlightLastMoveSquaresColor.withOpacity(0.45),
-                    width: widget.size!/8,
-                    height: widget.size!/8,
-                  ),
-                ),
-              ],
-            ),
-          ),
-
           // actual pieces
           if (!deferImagesLoading)
-          // drawing pieces
             AspectRatio(
               aspectRatio: 1.0,
               child: GridView.builder(
@@ -123,7 +88,7 @@ class _StaticChessboardState extends State<StaticChessBoard> {
                   var boardRank = widget.boardOrientation == PlayerColor.black ? '${row + 1}' : '${(7 - row) + 1}';
                   var boardFile = widget.boardOrientation == PlayerColor.white ? '${files[column]}' : '${files[7 - column]}';
                   var squareName = '$boardFile$boardRank';
-                  var piece = BoardPiece(squareName: squareName, game: widget.chessGame);
+                  var piece = BoardPieceForStaticChessBoard(squareName: squareName, game: widget.chessGame);
                   return piece;
                 },
                 itemCount: 64,
