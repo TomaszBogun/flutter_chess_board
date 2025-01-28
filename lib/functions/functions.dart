@@ -3,9 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:tuple/tuple.dart';
-import 'package:vector_math/vector_math.dart';
 import '../chess/chess.dart';
-import '../classes/SquareCache.dart';
+import '../drawers/ChessBoardDrawer.dart';
 
 // converts raw coordinates of the board where the user tapped on to board square coordinates
 Point getTapPositionOnBoard(Point tapPosition, double squareSize){
@@ -27,26 +26,15 @@ bool promotionMoveIsPossible(ChessBoardController chessController, String source
   return false;
 }
 
-// gets the boards 64 container squares (uses cache)
-Widget getBoardWidget(BoardColor color, bool isWhite) {
+Widget getBoardWidget(BoardColor color) {
   var lightSquareColor = boardColorToHexColor[color]![0];
   var darkSquareColor = boardColorToHexColor[color]![1];
 
-  return GridView.builder(
-    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-      crossAxisCount: 8,
+  return CustomPaint(
+    painter: ChessBoardDrawer(
+      lightSquareColor: lightSquareColor,
+      darkSquareColor: darkSquareColor,
     ),
-    itemBuilder: (context, index) {
-      final row = index ~/ 8; // Integer division
-      final col = index % 8;
-      final isLightSquare = (row + col) % 2 == 0;
-
-      // Use the shared SquareCache
-      return SquareCache.getSquare(isLightSquare, lightSquareColor, darkSquareColor);
-    },
-    itemCount: 64,
-    shrinkWrap: true,
-    physics: NeverScrollableScrollPhysics(),
   );
 }
 
