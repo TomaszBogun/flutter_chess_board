@@ -132,7 +132,13 @@ class _ChessBoardState extends State<ChessBoard> {
   }
 
   Widget getKingCheckHighlighterWidget(){
-    if(!widget.controller.game.in_check){
+    bool isInCheck = false;
+
+    try{
+      isInCheck = widget.controller.game.in_check;
+    }catch(e){}
+
+    if(!isInCheck){
       return SizedBox();
     }
 
