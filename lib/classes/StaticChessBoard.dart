@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:math';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_chess_board/classes/BoardPieceForStaticChessBoard.dart';
-import 'package:tuple/tuple.dart';
 import '../chess/chess.dart' as c;
 import '../flutter_chess_board.dart';
 import '../functions/functions.dart';
@@ -99,6 +97,9 @@ class _StaticChessboardState extends State<StaticChessBoard> {
         ],
       ),
     );
-    return board;
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: board
+    );
   }
 }

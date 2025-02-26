@@ -120,13 +120,15 @@ class _ChessBoardState extends State<ChessBoard> {
         );
 
         // overlay widget to detect tap up and tap down
-        return GestureDetector(
-          onTapDown: (TapDownDetails details){
-            onBoardTap(details, game);
-          },
-          child: chessBoard,
+        return Directionality(
+          textDirection: TextDirection.ltr,
+          child: GestureDetector(
+            onTapDown: (TapDownDetails details){
+              onBoardTap(details, game);
+            },
+            child: chessBoard,
+          ),
         );
-
       },
     );
   }
