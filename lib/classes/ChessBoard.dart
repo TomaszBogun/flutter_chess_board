@@ -155,7 +155,7 @@ class _ChessBoardState extends State<ChessBoard> {
       width: widget.size!,
       height: widget.size!,
       child: CustomPaint(
-        foregroundPainter: KingCheckDrawer(checkSquareNumerical: checkSquareNumerical, isWhite: widget.boardOrientation == PlayerColor.white, color: Colors.red.withValues(alpha: 110)),
+        foregroundPainter: KingCheckDrawer(checkSquareNumerical: checkSquareNumerical, isWhite: widget.boardOrientation == PlayerColor.white, color: ui.Color(0x6EFF0000)),
       ),
     );
   }
