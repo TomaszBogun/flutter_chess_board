@@ -144,10 +144,10 @@ class _ChessBoardState extends State<ChessBoard> {
       return SizedBox();
     }
 
-    bool whiteKingAttacked = widget.controller.game.king_attacked(Color.WHITE);
-    int king = widget.controller.game.kings[Color.WHITE];
+    bool whiteKingAttacked = widget.controller.game.king_attacked(ChessColor.WHITE);
+    int king = widget.controller.game.kings[ChessColor.WHITE];
     if(!whiteKingAttacked){
-      king = widget.controller.game.kings[Color.BLACK];
+      king = widget.controller.game.kings[ChessColor.BLACK];
     }
     String checkSquareNumerical = ((king%8)+1).toString() + (8-(king~/16)).toString();
 
@@ -307,7 +307,7 @@ class _ChessBoardState extends State<ChessBoard> {
           data: PieceMoveData(
             squareName: squareName,
             pieceType: pieceOnSquare?.type.toUpperCase() ?? 'P',
-            pieceColor: pieceOnSquare?.color ?? Color.WHITE,
+            pieceColor: pieceOnSquare?.color ?? ChessColor.WHITE,
           ),
         )
             : Container();
@@ -317,7 +317,7 @@ class _ChessBoardState extends State<ChessBoard> {
         }, onWillAccept: (pieceMoveData) {
           return widget.enableUserMoves ? true : false;
         }, onAccept: (PieceMoveData pieceMoveData) async {
-          Color moveColor = game.turn; // A way to check if move occurred.
+          ChessColor moveColor = game.turn; // A way to check if move occurred.
           if (promotionMoveIsPossible(widget.controller, pieceMoveData.squareName, squareName)) {
             var val = await promotionDialog(context);
             if (val == null) {
@@ -415,7 +415,7 @@ class _ChessBoardState extends State<ChessBoard> {
       }
       String sourceSquareName = '${files[tapSource.x.toInt()-1]}${tapSource.y}';
       String destinationSquareName = '${files[tapDestination.x.toInt()-1]}${tapDestination.y}';
-      Color moveColor = game.turn; // A way to check if move occurred.
+      ChessColor moveColor = game.turn; // A way to check if move occurred.
       if (promotionMoveIsPossible(widget.controller, sourceSquareName, destinationSquareName)) {
         var val = await promotionDialog(context);
         if (val == null) {

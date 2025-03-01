@@ -3,7 +3,7 @@ import 'package:flutter_chess_board/chess/chess.dart';
 class PieceMoveData {
   final String squareName;
   final String pieceType;
-  final Color pieceColor;
+  final ChessColor pieceColor;
 
   PieceMoveData({
     required this.squareName,

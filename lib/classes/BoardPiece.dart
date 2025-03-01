@@ -18,7 +18,7 @@ class BoardPiece extends StatelessWidget {
     if (game.get(squareName) == null) {
       return Container();
     }
-    String piece = (square?.color == Color.WHITE ? 'W' : 'B') + (square?.type.toUpperCase() ?? 'P');
+    String piece = (square?.color == ChessColor.WHITE ? 'W' : 'B') + (square?.type.toUpperCase() ?? 'P');
     switch (piece) {
       case "WP":
         imageToDisplay = Image.asset("images/white-pawn-256_x_256.png", package: 'flutter_chess_board');

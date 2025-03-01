@@ -21,7 +21,7 @@ class BoardPieceForStaticChessBoard extends StatelessWidget {
       return Container();
     }
 
-    String piece = (square?.color == Color.WHITE ? 'W' : 'B') + (square?.type.toUpperCase() ?? 'P');
+    String piece = (square?.color == ChessColor.WHITE ? 'W' : 'B') + (square?.type.toUpperCase() ?? 'P');
 
     switch (piece) {
       case "WP":

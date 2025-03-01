@@ -13,8 +13,8 @@ library chess;
 
 class Chess {
   // Constants/Class Variables
-  static const Color BLACK = Color.BLACK;
-  static const Color WHITE = Color.WHITE;
+  static const ChessColor BLACK = ChessColor.BLACK;
+  static const ChessColor WHITE = ChessColor.WHITE;
 
   static const int EMPTY = -1;
 
@@ -41,7 +41,7 @@ class Chess {
 
   static const List POSSIBLE_RESULTS = ['1-0', '0-1', '1/2-1/2', '*'];
 
-  static const Map<Color, List<int>> PAWN_OFFSETS = {
+  static const Map<ChessColor, List<int>> PAWN_OFFSETS = {
     BLACK: [16, 32, 17, 15],
     WHITE: [-16, -32, -17, -15]
   };
@@ -143,7 +143,7 @@ class Chess {
   static const int SQUARES_H1 = 119;
   static const int SQUARES_H8 = 7;
 
-  static final Map<Color, List> ROOKS = {
+  static final Map<ChessColor, List> ROOKS = {
     WHITE: [
       {'square': SQUARES_A1, 'flag': BITS_QSIDE_CASTLE},
       {'square': SQUARES_H1, 'flag': BITS_KSIDE_CASTLE}
@@ -157,7 +157,7 @@ class Chess {
   // Instance Variables
   List<Piece?> board = []..length = 128;
   ColorMap<int> kings = ColorMap(EMPTY);
-  Color turn = WHITE;
+  ChessColor turn = WHITE;
   ColorMap<int> castling = ColorMap(0);
   int? ep_square = EMPTY;
   int half_moves = 0;
@@ -447,7 +447,7 @@ class Chess {
     /* Is king of player in turn in check (without being in checkmate) ? */
     final board = Chess.fromFEN(fen, check_validity: false);
     final turn = board.turn;
-    final opponentTurn = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+    final opponentTurn = turn == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
     final kingInChess =
         !board.in_checkmate && board.king_attacked(opponentTurn);
 
@@ -515,11 +515,11 @@ class Chess {
     String epflags = '-';
     if (ep_square != EMPTY) {
       final capturingPawns = [15, 17]; // Offsets for potential captures
-      final lastTurn = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+      final lastTurn = turn == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
       final nextTurn = turn;
 
       for (var offset in capturingPawns) {
-        final captureSquare = ep_square! + (lastTurn == Color.WHITE ? -offset : offset);
+        final captureSquare = ep_square! + (lastTurn == ChessColor.WHITE ? -offset : offset);
         if (board[captureSquare]?.type == PAWN && board[captureSquare]?.color == nextTurn) {
           epflags = algebraic(ep_square!);
           break;
@@ -527,7 +527,7 @@ class Chess {
       }
     }
 
-    final turnStr = (turn == Color.WHITE) ? 'w' : 'b';
+    final turnStr = (turn == ChessColor.WHITE) ? 'w' : 'b';
 
     return [fen, turnStr, cflags, epflags].join(' ');
   }
@@ -587,11 +587,11 @@ class Chess {
     String epflags = '-';
     if (ep_square != EMPTY) {
       final capturingPawns = [15, 17]; // Offsets for potential captures
-      final lastTurn = turn == Color.WHITE ? Color.BLACK : Color.WHITE;
+      final lastTurn = turn == ChessColor.WHITE ? ChessColor.BLACK : ChessColor.WHITE;
       final nextTurn = turn;
 
       for (var offset in capturingPawns) {
-        final captureSquare = ep_square! + (lastTurn == Color.WHITE ? -offset : offset);
+        final captureSquare = ep_square! + (lastTurn == ChessColor.WHITE ? -offset : offset);
         if (board[captureSquare]?.type == PAWN && board[captureSquare]?.color == nextTurn) {
           epflags = algebraic(ep_square!);
           break;
@@ -599,7 +599,7 @@ class Chess {
       }
     }
 
-    final turnStr = (turn == Color.WHITE) ? 'w' : 'b';
+    final turnStr = (turn == ChessColor.WHITE) ? 'w' : 'b';
 
     return [fen, turnStr, cflags, epflags, half_moves, move_number].join(' ');
   }
@@ -888,7 +888,7 @@ class Chess {
     return output;
   }
 
-  bool attacked(Color color, int square) {
+  bool attacked(ChessColor color, int square) {
     for (var i = SQUARES_A8; i <= SQUARES_H1; i++) {
       /* did we run off the end of the board */
       if ((i & 0x88) != 0) {
@@ -936,7 +936,7 @@ class Chess {
     return false;
   }
 
-  bool king_attacked(Color color) {
+  bool king_attacked(ChessColor color) {
     return attacked(swap_color(color), kings[color]);
   }
 
@@ -1280,7 +1280,7 @@ class Chess {
     return 'abcdefgh'.substring(f, f + 1) + '87654321'.substring(r, r + 1);
   }
 
-  static Color swap_color(Color c) {
+  static ChessColor swap_color(ChessColor c) {
     return c == WHITE ? BLACK : WHITE;
   }
 
@@ -1762,7 +1762,7 @@ class Chess {
 
 class Piece {
   PieceType type;
-  final Color color;
+  final ChessColor color;
   Piece(this.type, this.color);
 }
 
@@ -1786,7 +1786,7 @@ class PieceType {
   String toUpperCase() => name.toUpperCase();
 }
 
-enum Color { WHITE, BLACK }
+enum ChessColor { WHITE, BLACK }
 
 class ColorMap<T> {
   T _white;
@@ -1798,12 +1798,12 @@ class ColorMap<T> {
       : _white = other._white,
         _black = other._black;
 
-  T operator [](Color color) {
-    return (color == Color.WHITE) ? _white : _black;
+  T operator [](ChessColor color) {
+    return (color == ChessColor.WHITE) ? _white : _black;
   }
 
-  void operator []=(Color color, T value) {
-    if (color == Color.WHITE) {
+  void operator []=(ChessColor color, T value) {
+    if (color == ChessColor.WHITE) {
       _white = value;
     } else {
       _black = value;
@@ -1812,7 +1812,7 @@ class ColorMap<T> {
 }
 
 class Move {
-  final Color color;
+  final ChessColor color;
   final int from;
   final int to;
   final int flags;
@@ -1834,7 +1834,7 @@ class Move {
 class State {
   final Move move;
   final ColorMap<int> kings;
-  final Color turn;
+  final ChessColor turn;
   final ColorMap<int> castling;
   final int? ep_square;
   final int half_moves;

@@ -142,7 +142,7 @@ class ChessBoardController extends ValueNotifier<Chess> {
 
   /// Gets respective piece
   Piece _getPiece(BoardPieceType piece, PlayerColor color) {
-    var convertedColor = color == PlayerColor.white ? Color.WHITE : Color.BLACK;
+    var convertedColor = color == PlayerColor.white ? ChessColor.WHITE : ChessColor.BLACK;
 
     switch (piece) {
       case BoardPieceType.Bishop:

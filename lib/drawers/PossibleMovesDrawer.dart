@@ -3,7 +3,7 @@ import 'dart:ui' as ui;
 
 import 'package:flutter/cupertino.dart';
 
-import '../chess/chess.dart' hide Color;
+import '../chess/chess.dart' hide ChessColor;
 import '../flutter_chess_board.dart';
 
 class PossibleMovesDrawer extends CustomPainter{
