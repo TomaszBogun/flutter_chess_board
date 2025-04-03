@@ -7,6 +7,7 @@ import '../chess/chess.dart' hide State;
 import '../drawers/ArrowDrawer.dart';
 import '../drawers/HintSquareDrawer.dart';
 import '../functions/functions.dart';
+import '../sharedWidgets/getBoardBorderWidget.dart';
 import '../sharedWidgets/getBoardNumberAndLettersWidget.dart';
 import 'BoardPiece.dart';
 import 'ChessBoardController.dart';
@@ -91,7 +92,7 @@ class _ChessBoardState extends State<ChessBoard> {
                 child: getBoardWidget(widget.boardColor),
               ),
 
-              getBorderWidget(),
+              getBoardBorderWidget(widget.size!, widget.borderColor),
 
               // highlights from and to squares
               getHighlightLastSquaresWidget(),
@@ -158,24 +159,6 @@ class _ChessBoardState extends State<ChessBoard> {
       child: CustomPaint(
         foregroundPainter: KingCheckDrawer(checkSquareNumerical: checkSquareNumerical, isWhite: widget.boardOrientation == PlayerColor.white, color: ui.Color(0x6EFF0000)),
       ),
-    );
-  }
-
-  Widget getBorderWidget(){
-    if(widget.borderColor.a == 255){
-      return SizedBox();
-    }
-
-    double borderThicknessComparedToSingleChessBoardSquare = 0.1;
-    double chessBoardSquareSize = widget.size!/8;
-    double thicknessOfBorder = chessBoardSquareSize * borderThicknessComparedToSingleChessBoardSquare;
-
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: widget.borderColor, width: thicknessOfBorder),
-      ),
-      width: widget.size!,
-      height: widget.size!,
     );
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter_chess_board/classes/BoardPieceForStaticChessBoard.dart';
 import '../chess/chess.dart' as c;
 import '../flutter_chess_board.dart';
 import '../functions/functions.dart';
+import '../sharedWidgets/getBoardBorderWidget.dart';
 import '../sharedWidgets/getBoardNumberAndLettersWidget.dart';
 
 class StaticChessBoard extends StatefulWidget{
@@ -17,24 +18,21 @@ class StaticChessBoard extends StatefulWidget{
 
   /// The color type of the board
   final BoardColor boardColor;
+  final Color borderColor; // used for drawing red or green border on incorrect or correct move while training
 
   final bool showBoardNumberAndLetters;
 
   final PlayerColor boardOrientation;
-
-  final bool highlightLastMoveSquares;
-
-  final dynamic highlightLastMoveSquaresColor;
 
   const StaticChessBoard({
     Key? key,
     required this.chessGame,
     this.showBoardNumberAndLetters = false,
     this.size,
-    this.boardColor = BoardColor.brown,
     this.boardOrientation = PlayerColor.white,
-    this.highlightLastMoveSquares = true,
-    required this.highlightLastMoveSquaresColor,
+    // colors
+    this.boardColor = BoardColor.brown,
+    this.borderColor = const Color(0x00ffffff),
   }) : super(key: key);
 
   @override
@@ -78,6 +76,8 @@ class _StaticChessboardState extends State<StaticChessBoard> {
             dimension: widget.size,
             child: boardImage,
           ),
+
+          getBoardBorderWidget(widget.size!, widget.borderColor),
 
           // actual pieces
           if (!deferImagesLoading)
