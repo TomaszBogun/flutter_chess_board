@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_chess_board/classes/BoardPieceForStaticChessBoard.dart';
+import 'package:flutter_chess_board/classes/BoardPiece.dart';
 import '../chess/chess.dart' as c;
 import '../flutter_chess_board.dart';
 import '../functions/functions.dart';
@@ -24,12 +24,15 @@ class StaticChessBoard extends StatefulWidget{
 
   final PlayerColor boardOrientation;
 
+  final BoardPieceResolutionSize boardPieceResolutionSize;
+
   const StaticChessBoard({
     Key? key,
     required this.chessGame,
     this.showBoardNumberAndLetters = false,
     this.size,
     this.boardOrientation = PlayerColor.white,
+    this.boardPieceResolutionSize = BoardPieceResolutionSize.low,
     // colors
     this.boardColor = BoardColor.brown,
     this.borderColor = const Color(0x00ffffff),
@@ -91,7 +94,7 @@ class _StaticChessboardState extends State<StaticChessBoard> {
                   var boardRank = widget.boardOrientation == PlayerColor.black ? '${row + 1}' : '${(7 - row) + 1}';
                   var boardFile = widget.boardOrientation == PlayerColor.white ? '${files[column]}' : '${files[7 - column]}';
                   var squareName = '$boardFile$boardRank';
-                  var piece = BoardPieceForStaticChessBoard(squareName: squareName, game: widget.chessGame);
+                  var piece = BoardPiece(squareName: squareName, game: widget.chessGame, boardPieceResolutionSize: widget.boardPieceResolutionSize,);
                   return piece;
                 },
                 itemCount: 64,

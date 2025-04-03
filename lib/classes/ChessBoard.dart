@@ -32,6 +32,8 @@ class ChessBoard extends StatefulWidget {
 
   final bool highlightLastMoveSquares;
 
+  final BoardPieceResolutionSize boardPieceResolutionSize;
+
   // colors
   final BoardColor boardColor;
   final ui.Color mainColor; // used for next moves arrows, hint squares, solution arrows
@@ -56,6 +58,7 @@ class ChessBoard extends StatefulWidget {
     this.enableUserMoves = true,
     this.boardOrientation = PlayerColor.white,
     this.highlightLastMoveSquares = true,
+    this.boardPieceResolutionSize = BoardPieceResolutionSize.high,
     // colors
     this.boardColor = BoardColor.brown,
     this.mainColor = const ui.Color(0x00ffffff),
@@ -226,7 +229,7 @@ class _ChessBoardState extends State<ChessBoard> {
         var squareName = '$boardFile$boardRank';
         var pieceOnSquare = game.get(squareName);
 
-        var piece = BoardPiece(squareName: squareName, game: game);
+        var piece = BoardPiece(squareName: squareName, game: game, boardPieceResolutionSize: widget.boardPieceResolutionSize,);
 
         var draggable = game.get(squareName) != null
             ? Draggable<PieceMoveData>(
