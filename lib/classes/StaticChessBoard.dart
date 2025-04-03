@@ -5,6 +5,7 @@ import 'package:flutter_chess_board/classes/BoardPieceForStaticChessBoard.dart';
 import '../chess/chess.dart' as c;
 import '../flutter_chess_board.dart';
 import '../functions/functions.dart';
+import '../sharedWidgets/getBoardNumberAndLettersWidget.dart';
 
 class StaticChessBoard extends StatefulWidget{
   /// An instance of [ChessBoardController] which holds the game and allows
@@ -17,6 +18,8 @@ class StaticChessBoard extends StatefulWidget{
   /// The color type of the board
   final BoardColor boardColor;
 
+  final bool showBoardNumberAndLetters;
+
   final PlayerColor boardOrientation;
 
   final bool highlightLastMoveSquares;
@@ -26,6 +29,7 @@ class StaticChessBoard extends StatefulWidget{
   const StaticChessBoard({
     Key? key,
     required this.chessGame,
+    this.showBoardNumberAndLetters = false,
     this.size,
     this.boardColor = BoardColor.brown,
     this.boardOrientation = PlayerColor.white,
@@ -74,6 +78,7 @@ class _StaticChessboardState extends State<StaticChessBoard> {
             dimension: widget.size,
             child: boardImage,
           ),
+
           // actual pieces
           if (!deferImagesLoading)
             AspectRatio(
@@ -94,6 +99,9 @@ class _StaticChessboardState extends State<StaticChessBoard> {
                 physics: NeverScrollableScrollPhysics(),
               ),
             ),
+
+          getBoardNumberAndLettersWidget(widget. showBoardNumberAndLetters, widget.boardOrientation, widget.size!, widget.boardColor),
+
         ],
       ),
     );
